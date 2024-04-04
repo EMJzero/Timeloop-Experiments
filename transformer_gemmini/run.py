@@ -20,11 +20,24 @@ def if_match_and_remove(flag, with_value = False):
 
 def parse_options():
     options = {
-        "live": if_match_and_remove("-l") or if_match_and_remove("--live")
+        "help": if_match_and_remove("-h") or if_match_and_remove("--help"),
+        "live": if_match_and_remove("-l") or if_match_and_remove("--live"),
+        "no_e_fusion": if_match_and_remove("-nef") or if_match_and_remove("--no_e_fusion"),
+        "l_fusion": if_match_and_remove("-lf") or if_match_and_remove("--l_fusion")
     }
     return options
 
 options = parse_options()
+
+if options['help']:
+    print("Available options:")
+    print("-h, --help\t\tprint this help menu.")
+    print("-l, --live\t\tshow Timeloop's live status as it runs.")
+    print("-nef, --no_e_fusion\tdo not enforce E=1 when doing fusions (useful only on matmul layers).")
+    print("\t\t\t[Increases the latency with which column vectors are ready, due to DRAM accesses]")
+    print("-lf, --l_fusion\t\tenforce L=1 when doing fusions (useful only on matmul layers).")
+    print("\t\t\t[Stores the entirety of the output in the Accumulator, useful NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
+    sys.exit(0)
 
 matmuls = ["KQV", "KTQ", "VScores", "Out", "FF1", "FF2"]
 normops = ["softmax", "layernorm"]
@@ -58,7 +71,8 @@ if len(sys.argv) not in [2, 3] or sys.argv[1] not in valid_args_1 or (len(sys.ar
 print(f"Arguments provided: {sys.argv}")
 
 is_norm_op = sys.argv[1] in normops
-level_for_fusion = memory_levels.index(sys.argv[2]) if len(sys.argv) == 3 else 0
+is_fusion = len(sys.argv) == 3
+level_for_fusion = memory_levels.index(sys.argv[2]) if is_fusion else 0
 
 # Define relative paths
 ARCH_PATH = f"{os.curdir}/arch/system_gemmini{'_NOs' if is_norm_op else ''}.yaml"
@@ -79,74 +93,82 @@ spec = tl.Specification.from_yaml_files(
     VARIABLES_PATH
 )  # Gather YAML files into a Python object
 
+constrained_factors = ["D=1"]
+if not options['no_e_fusion']: constrained_factors.append("E=1")
+if options['l_fusion']: constrained_factors.append("L=1")
+
 if spec.constraints['targets'] is None:
     spec.constraints['targets'] = tl.constraints.ConstraintsList()
-if not is_norm_op:
-    # Apply fusion constraints
-    found = []
-    for target in spec.constraints['targets']:
-        if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
-            found.append(target['target'])
-            target.factors = ["D=1", "E=1"]
-            print(f"Updating constraint: {dict(target.items())}")
-    for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
-        spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'temporal', 'factors': ['D=1', 'E=1']}))
-        print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
-    found.clear()
-    # It is fine if outputs are written from the Accumulator to DRAM, as long as when there is
-    # fusion full columns are available at the accumulator (enforce by forcing outer iterations
-    # on E and D at 1). This is fine because during modelling of the NOs, when fusing at the
-    # accumulator you SKIP the cost of writing outputs to DRAM! Thus, adding the two costs
-    # (matmul and NO), you write to DRAM once anyway, but the NO adds the cost of the 3 passes
-    # on the columns while they are in the accumulator!
-    #for target in spec.constraints['targets']:
-    #    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target.type == "dataspace":
-    #        found.append(target['target'])
-    #        if "Outputs" not in target['bypass']:
-    #            target.bypass.append("Outputs")
-    #        if "Outputs" in target['keep']:
-    #            target.keep.remove("Outputs")
-    #        print(f"Updating constraint: {dict(target.items())}")
-    #for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
-    #    spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'keep': ["Inputs", "Weights"], 'bypass': ["Outputs"]}))
-    #    print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+if is_fusion:
+    if not is_norm_op:
+        # Apply fusion constraints
+        found = []
+        for target in spec.constraints['targets']:
+            if target['target'] in memory_levels[-1:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
+                found.append(target['target'])
+                target.factors = constrained_factors
+                print(f"Updating constraint: {dict(target.items())}")
+        for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
+            spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'temporal', 'factors': constrained_factors}))
+            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+        found.clear()
+        # It is fine if outputs are written from the Accumulator to DRAM, as long as when there is
+        # fusion full columns are available at the accumulator (enforce by forcing outer iterations
+        # on E and D at 1). This is fine because during modelling of the NOs, when fusing at the
+        # accumulator you SKIP the cost of writing outputs to DRAM! Thus, adding the two costs
+        # (matmul and NO), you write to DRAM once anyway, but the NO adds the cost of the 3 passes
+        # on the columns while they are in the accumulator!
+        #for target in spec.constraints['targets']:
+        #    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target.type == "dataspace":
+        #        found.append(target['target'])
+        #        if "Outputs" not in target['bypass']:
+        #            target.bypass.append("Outputs")
+        #        if "Outputs" in target['keep']:
+        #            target.keep.remove("Outputs")
+        #        print(f"Updating constraint: {dict(target.items())}")
+        #for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
+        #    spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'keep': ["Inputs", "Weights"], 'bypass': ["Outputs"]}))
+        #    print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+        
+        # THE LEVEL AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
+        for target in spec.constraints['targets']:
+            if target['target'] == memory_levels[level_for_fusion] and target['target'] and target['type'] == "temporal":
+                found.append(target['target'])
+                target['permutation'] = ['E', 'D', 'L']
+                print(f"Updating constraint: {dict(target.items())}")
+                break
+        if len(found) == 0:
+            spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': memory_levels[level_for_fusion], 'type': 'temporal', 'permutation': ['E', 'D', 'L']}))
+            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
     
-    # THE LEVEL AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
-    for target in spec.constraints['targets']:
-        if target['target'] == memory_levels[level_for_fusion] and target['target'] and target['type'] == "temporal":
-            found.append(target['target'])
-            target['permutation'] = ['E', 'D', 'L']
-            print(f"Updating constraint: {dict(target.items())}")
-            break
-    if len(found) == 0:
-        spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': memory_levels[level_for_fusion], 'type': 'temporal', 'permutation': ['E', 'D', 'L']}))
-        print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
-if is_norm_op:
-    print("WARNING: copying just the bypasses, disregarding latency between two columns being ready. This means that only energy is a valid estimate.")
-    # Apply the fusion to the NO
-    found = []
-    for target in spec.constraints['targets']:
-        if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "dataspace":
-            found.append(target['target'])
-            if "Inputs" not in target['bypass']:
+    if is_norm_op:
+        print("WARNING: copying just the bypasses, disregarding latency between two columns being ready. This means that only energy is a valid estimate.")
+        # Apply the fusion to the NO
+        found = []
+        for target in spec.constraints['targets']:
+            if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "dataspace":
+                found.append(target['target'])
+                if "Inputs" not in target['bypass']:
+                    target.bypass.append("Inputs")
+                if "Inputs" in target['keep']:
+                    target.keep.remove("Inputs")
+                print(f"Updating constraint: {dict(target.items())}")
+            if (level_for_fusion >= 1 # fusing at Accumulator level
+                and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
+                and target.type == "dataspace"):
                 target.bypass.append("Inputs")
-            if "Inputs" in target['keep']:
                 target.keep.remove("Inputs")
-            print(f"Updating constraint: {dict(target.items())}")
-        if (level_for_fusion >= 1 # fusing at Accumulator level
-            and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
-            and target.type == "dataspace"):
-            target.bypass.append("Inputs")
-            target.keep.remove("Inputs")
-            print(f"Updating constraint: {dict(target.items())}")
-    for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
-        spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"]}))
-        print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+                print(f"Updating constraint: {dict(target.items())}")
+        for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
+            spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"]}))
+            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
 
 if options['live']:
     spec.mapper.live_status = True
 
-output_dir = f"{os.curdir}/outputs_{sys.argv[1]}"
+spec.mapspace.template = 'uber' #'ruby'
+
+output_dir = f"{os.curdir}/outputs_{sys.argv[1]}" + (("_" + sys.argv[2]) if level_for_fusion else "")
 if not os.path.exists(output_dir): os.makedirs(output_dir)
 tl.call_mapper(spec, output_dir=output_dir)  # Run the Timeloop mapper
 
@@ -163,7 +185,11 @@ def read_and_indent(path, n_lines=30, start_at: str = None, end_at: str = None):
     content = content[:n_lines] if n_lines > 0 else content[n_lines:]
     return "\t" + "\n\t".join(content)
 
+def append_to_file(path, text_to_append):
+    with open(path, 'a') as file:
+        file.write('\n\n' + text_to_append)
 
+append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Fusion optimized: {is_fusion}\nFusion constraints: {constrained_factors}")
 print("\n\nMapping:")
-print(read_and_indent(f"{os.curdir}/outputs_{sys.argv[1]}/timeloop-mapper.map.txt"))
+print(read_and_indent(f"{output_dir}/timeloop-mapper.map.txt"))
 

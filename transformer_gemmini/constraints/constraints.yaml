@@ -1,6 +1,5 @@
 constraints:
   version: 0.4
-  #template: ruby
   targets:
     # =======================================
     # DRAM
@@ -22,7 +21,8 @@ constraints:
       bypass: [Outputs]
     - target: Scratchpad
       type: temporal
-      factors: [E=1, D=1]
+      # This is needed when fusing, but is it needed otherwise?
+      factors: [D=1] #[E=1, D=1]
       #maximize_dims: [[D, E], [L]]
       #maximize_dims_capacity: max(EMBEDDING, SEQ_LENGTH)
     #- target: Scratchpad

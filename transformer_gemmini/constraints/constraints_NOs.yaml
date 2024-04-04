@@ -1,6 +1,5 @@
 constraints:
   version: 0.4
-  #template: ruby
   targets:
     # =======================================
     # DRAM
@@ -18,8 +17,8 @@ constraints:
     # =======================================
     - target: Scratchpad
       type: dataspace
-      keep: [Inputs, Outputs] # REMOVE INPUTS FROM HERE WHEN FUSING AT THE ACCUMULATOR!
-      bypass: [Weights] # Indeed bypassing here Inputs (fusion) helps!
+      keep: [Inputs] # REMOVE INPUTS FROM HERE WHEN FUSING AT THE ACCUMULATOR!
+      bypass: [Weights, Outputs] # Indeed bypassing here Inputs (fusion) helps!
     #- target: Scratchpad
     #  type: temporal
     #  factors: [E=1, D=1]
@@ -56,3 +55,11 @@ constraints:
       # 0 is a special factor, it means to use the full dimension!
       factors: [E=0, D=0] #[E=64, D=1]
       permutation: [E, D, L]
+    - target: Registers_Inputs
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs]
+    - target: Registers_Outputs
+      type: dataspace
+      keep: [Outputs]
+      bypass: [Inputs, Weights]

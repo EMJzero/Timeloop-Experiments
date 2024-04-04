@@ -58,20 +58,52 @@ architecture:
       n_banks: 32 #2
       #meshY: 16
 
-  - !Component
-    name: Registers
-    class: SRAM
-    attributes:
-      vector_access_energy: 0 # fake weights have 0 cost
-      addr_gen_energy: 0 # fake weights have 0 cost
-      cluster_area: 0 # fake weights have 0 cost
-      depth: 2304 #64
-      width: 8
-      entries: 2304 #64
-      datawidth: 8
-      n_rdwr_ports: 2
-      n_banks: 1
-      #meshY: 16
+  - !Parallel
+    nodes:
+    - !Component
+      name: Registers
+      class: SRAM
+      attributes:
+        vector_access_energy: 0 # fake weights have 0 cost
+        addr_gen_energy: 0 # fake weights have 0 cost
+        cluster_area: 0 # fake weights have 0 cost
+        depth: 2304 #64
+        width: 8
+        entries: 2304 #64
+        datawidth: 8
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 16
+    
+    - !Component
+      name: Registers_Outputs
+      class: SRAM
+      attributes:
+        vector_access_energy: 0 # fake weights have 0 cost
+        addr_gen_energy: 0 # fake weights have 0 cost
+        cluster_area: 0 # fake weights have 0 cost
+        depth: 2304 #64
+        width: 8
+        entries: 2304 #64
+        datawidth: 8
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 16
+
+    - !Component
+      name: Registers_Inputs
+      class: SRAM
+      attributes:
+        vector_access_energy: 0 # fake weights have 0 cost
+        addr_gen_energy: 0 # fake weights have 0 cost
+        cluster_area: 0 # fake weights have 0 cost
+        depth: 2304 #64
+        width: 8
+        entries: 2304 #64
+        datawidth: 8
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 16
   
   - !Component
     name: MAC
