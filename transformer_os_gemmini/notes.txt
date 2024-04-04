@@ -1,0 +1,4 @@
+Notes:
+
+- when modelling two layers meant to run back to back, you can model the operands still being in high levels of the memory hierarchy (IF THEY FIT) with BYPASSES!
+  See last point here: https://timeloop.csail.mit.edu/v4/faq

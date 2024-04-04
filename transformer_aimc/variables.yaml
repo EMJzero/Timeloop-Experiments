@@ -1,0 +1,12 @@
+variables:
+  version: 0.3
+  global_cycle_seconds: 1e-9
+  technology: "40nm"
+
+  # defaults for BERT-base
+  EMBEDDING: 768
+  SEQ_LENGTH: 512
+  HEADS: 12
+  FF_DIM: 3072
+  EMBEDDING//HEADS: 64
+  EMBEDDING*3: 2304

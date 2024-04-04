@@ -1,0 +1,4 @@
+technology,cellwidth,action,power(W),global_cycle_seconds,action_latency_cycles,n_instances,energy,area,comment
+free,read,0.00E+00,1.2e-09,1,1,0.00E+00,0,"energy in pJ;  area in mm^2, power"
+free,write,0.00E+00,1.2e-09,1,1,0.00E+00,0,
+free,idle,0.00E+00,1.2e-09,1,1,0.00E+00,0,

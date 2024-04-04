@@ -1,0 +1,120 @@
+architecture:
+  version: 0.3
+
+  subtree:
+    - name: System
+      local:
+        - name: DRAM
+          class: DRAM
+          attributes:
+            instances: 1
+            word-bits: 8
+            block_size: 64
+            shared_bandwidth: 8
+      subtree:
+        - name: Chip
+          attributes:
+            technology: "40nm"
+          local:
+          # Remember: word-bits*block-size == width 
+            - name: Scratchpad 
+              class: SRAM
+              attributes:
+                entries: 262144 # number of 8-bit entries
+                depth: 16384 # rows
+                width: 128 # cols per row, you read one row (width-bits) at a time
+                instances: 1
+                word-bits: 8
+                n_rdwr_ports: 2
+                n_banks: 4
+                block-size: 16
+                network_read: simple_network
+                network_update: simple_network
+            - name: IMC_module
+              class: SRAM
+              attributes:
+                entries: 1024
+                depth: 1024
+                width: 8
+                word-bits: 8
+                instances: 1
+                n_rdwr_ports: 1
+                n_banks: 1
+                block-size: 1
+                network_fill: simple_network
+                network_drain: simple_network
+                network_read: DAC_network
+                network_update: ADC_network
+            - name: InputBuffer
+              class: SRAM
+              attributes:
+                entries: 32 # number of 8-bit entries, one vector means same as meshX
+                depth: 1 # rows, one for one vector
+                width: 256 # cols per row, you read one row (width-bits) at a time
+                instances: 1
+                word-bits: 8
+                n_rdwr_ports: 1
+                n_banks: 1
+                block-size: 32
+                network_fill: simple_network
+                network_drain: simple_network
+                network_read: DAC_network
+                network_update: ADC_network
+            - name: OutputBuffer # double check that this is still 8 bit and not 16!
+              class: SRAM
+              attributes:
+                entries: 32 # number of 8-bit entries, one vector means same as meshY
+                depth: 1 # rows, one for one vector
+                width: 256 # cols per row, you read one row (width-bits) at a time
+                instances: 1
+                word-bits: 8
+                n_rdwr_ports: 1
+                n_banks: 1
+                block-size: 32
+                network_fill: simple_network
+                network_drain: simple_network
+                network_read: DAC_network
+                network_update: ADC_network
+            - name: free_network
+              class: Legacy
+              attributes:
+                network_type: 1:N
+                datawidth: 32
+                router_energy: 0
+                wire_energy: 0
+                energy_per_hop: 0
+            - name: simple_network
+              class: Legacy
+              attributes:
+                network_type: 1:1
+                datawidth: 32
+                router_energy: 1
+                wire_energy: 1
+                energy_per_hop: 1
+            - name: ADC_network
+              class: Legacy
+              attributes:
+                network_type: 1:N
+                datawidth: 32
+                router_energy: 1
+                wire_energy: 1
+                energy_per_hop: 1
+            - name: DAC_network
+              class: Legacy
+              attributes:
+                network_type: 1:N
+                datawidth: 32
+                router_energy: 1
+                wire_energy: 1
+                energy_per_hop: 1
+          subtree:
+            - name: PEs[0..1023]
+              local:
+                - name: MAC
+                  class: intmac
+                  attributes:
+                    word-bits: 8
+                    meshX: 32 # number of components in the X dimension (PE rows)
+                    meshY: 32 # number of components in the Y dimension (PE cols)
+                    network_operand: free_network
+                    network_result: free_network

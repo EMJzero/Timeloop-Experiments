@@ -1,0 +1,53 @@
+architecture:
+  version: 0.3
+
+  subtree:
+  - name: System
+    local:
+    - name: DRAM
+      class: DRAM
+      attributes:
+        instances: 1
+        word-bits: 8
+        block_size: 64
+        shared_bandwidth: 8
+
+    subtree:
+    - name: Chip
+      attributes:
+        technology: "40nm"
+      local:
+      # Remember: word-bits*block-size == width 
+      - name: Scratchpad 
+        class: SRAM
+        attributes:
+          entries: 262144 # number of 8-bit entries
+          depth: 16384 # rows
+          width: 128 # cols per row, you read one row (width-bits) at a time
+          instances: 1
+          word-bits: 8
+          n_rdwr_ports: 2
+          n_banks: 4
+          block-size: 16
+      - name: IMC_module # we reuse it as just a normal memory here!
+        class: SRAM
+        attributes:
+          entries: 1024
+          depth: 1024
+          width: 8
+          word-bits: 8
+          instances: 1
+          n_rdwr_ports: 1
+          n_banks: 1
+          block-size: 1
+      subtree:
+        - name: PE
+          local:
+          - name: scratchpad
+            attributes:
+              width: 8 # width in bits
+              depth: 32 # register file size for RISC-V Rocket
+          - name: MAC
+            class: compute # just the main EXEC stage of the Rocket core!
+            attributes:
+              word-bits: 32

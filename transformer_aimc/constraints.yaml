@@ -1,0 +1,70 @@
+mapspace:
+  targets:
+    # =======================================
+    # DRAM
+    # =======================================
+    #- target: DRAM
+    #  type: bypassing
+    #  keep: [Inputs, Outputs]
+    #  bypass: [Weights]
+    #- target: DRAM
+    #  type: temporal
+    #  factors: D=1 E=1
+    #  permutation: EDL
+    # =======================================
+    # Global Buffer Constraints
+    # =======================================
+    #- target: Scratchpad
+    #  type: bypassing
+    #  keep: [Inputs, Outputs]
+    #  bypass: [Weights]
+    #- target: Scratchpad
+    #  type: temporal
+    #  factors: D=1 E=1
+    # =======================================
+    # WS Buffer Constraints
+    # =======================================
+    - target: IMC_module
+      type: bypassing
+      keep: [Weights]
+      bypass: [Inputs, Outputs]
+    - target: IMC_module
+      type: temporal
+      factors: D=1 E=1  # single weight tile that does not change
+    - target: IMC_module
+      type: spatial
+      factors: L=1 # all those not spatially mapped shall be 1
+      permutation: D E
+      split: 1
+    # =======================================
+    # Input Staging Buffer Constraints
+    # =======================================
+    - target: InputBuffer
+      type: bypassing
+      keep: [Inputs]
+      bypass: [Weights, Outputs]
+    - target: InputBuffer
+      type: temporal
+      factors: D=1 L=1  # single input column that does not change
+    # =======================================
+    # Output Staging Buffer Constraints
+    # =======================================
+    - target: OutputBuffer
+      type: bypassing
+      keep: [Outputs]
+      bypass: [Inputs, Weights]
+    - target: OutputBuffer
+      type: temporal
+      factors: E=1 L=1  # single output column that does not change
+    # =======================================
+    # WS PEs Constraints
+    # =======================================
+    # Ops, you cannot apply constraints to PEs...
+    #- target: MAC
+    #  type: spatial
+    #  factors: L=1 # all those not spatially mapped shall be 1
+    #  permutation: D E
+    #  split: 1
+    #- target: MAC
+    #  type: temporal
+    #  factors: D=1 E=1  # single weight tile that does not change

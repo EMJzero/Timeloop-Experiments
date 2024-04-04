@@ -1,0 +1,24 @@
+problem:
+  version: 0.3
+  shape:
+    name: VScores_matmul_encoder
+    # S became E
+    dimensions: [ L, E, D ]
+    data_spaces:
+    - name: Weights
+      projection:
+        - [ [D] ]
+        - [ [E] ]
+    - name: Inputs
+      projection:
+        - [ [E] ]
+        - [ [L] ]
+    - name: Outputs
+      projection:
+        - [ [D] ]
+        - [ [L] ]
+      read_write: True
+  instance:
+    L: SEQ_LENGTH
+    E: SEQ_LENGTH
+    D: EMBEDDING//HEADS

@@ -1,0 +1,58 @@
+constraints:
+  version: 0.4
+  #template: ruby
+  targets:
+    # =======================================
+    # DRAM
+    # =======================================
+    - target: DRAM
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs] # the previous matmul accounts for the cost of writing outputs!
+    #- target: DRAM
+    #  type: temporal
+    #  factors: D=1 E=1
+    #  permutation: EDL
+    # =======================================
+    # Scratchpad Constraints
+    # =======================================
+    - target: Scratchpad
+      type: dataspace
+      keep: [Inputs, Outputs] # REMOVE INPUTS FROM HERE WHEN FUSING AT THE ACCUMULATOR!
+      bypass: [Weights] # Indeed bypassing here Inputs (fusion) helps!
+    #- target: Scratchpad
+    #  type: temporal
+    #  factors: [E=1, D=1]
+    #- target: Scratchpad
+    #  type: spatial
+    #  factors: [E=1, D=1]
+    # =======================================
+    # Outputs Accumulator Constraints
+    # =======================================
+    - target: Accumulator
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Outputs, Weights]
+      #no_coalesce: [Inputs, Outputs, Weights]
+    #- target: Accumulator
+    #  type: temporal
+    #  maximize_dims: [[E]]
+    #- target: Accumulator
+    #  type: spatial
+    #  factors: [E=1, D=1]
+    #- target: Accumulator
+    #  type: temporal
+    #  factors: [E=1, D=1]
+    # =======================================
+    # WS Registers Constraints
+    # =======================================
+    - target: Registers
+      type: dataspace
+      keep: [Weights]
+      bypass: [Inputs, Outputs]
+      #no_coalesce: [Inputs, Outputs, Weights]
+    - target: Registers
+      type: temporal
+      # 0 is a special factor, it means to use the full dimension!
+      factors: [E=0, D=0] #[E=64, D=1]
+      permutation: [E, D, L]

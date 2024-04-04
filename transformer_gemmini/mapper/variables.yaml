@@ -1,0 +1,16 @@
+variables:
+  version: 0.4
+  # my guess is that this is 1/frequency
+  global_cycle_seconds: 1.2e-9
+  technology: "32nm"
+  #latency: "1ns"
+
+  # defaults for BERT-base
+  EMBEDDING: 768
+  SEQ_LENGTH: 512
+  HEADS: 12
+  FF_DIM: 3072
+  EMBEDDING_HEADS: 64
+  EMBEDDING_3: 2304
+#b8f3e5c cacti
+#9a8dc0d accelergy

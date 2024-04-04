@@ -1,0 +1,426 @@
+2024-04-02 01:42:52 INFO            _                _                      
+2024-04-02 01:42:52 INFO           / \   ___ ___ ___| | ___ _ __ __ _ _   _ 
+2024-04-02 01:42:52 INFO          / _ \ / __/ __/ _ \ |/ _ \ '__/ _` | | | |
+2024-04-02 01:42:52 INFO         / ___ \ (_| (_|  __/ |  __/ | | (_| | |_| |
+2024-04-02 01:42:52 INFO        /_/   \_\___\___\___|_|\___|_|  \__, |\__, |
+2024-04-02 01:42:52 INFO                                        |___/ |___/ 
+2024-04-02 01:42:52 INFO        generating outputs according to the following specified output flags... 
+2024-04-02 01:42:52 INFO         Please use the -f flag to update the preference (default to all output files)
+2024-04-02 01:42:52 INFO        {'ERT': 1, 'ERT_summary': 1, 'ART': 1, 'ART_summary': 1, 'energy_estimation': 1, 'flattened_arch': 1}
+2024-04-02 01:42:52 INFO        Located config file at /home/emj_zero/.config/accelergy/accelergy_config.yaml.
+2024-04-02 01:42:52 INFO        config file located:
+2024-04-02 01:42:52 INFO        /home/emj_zero/.config/accelergy/accelergy_config.yaml
+2024-04-02 01:42:52 INFO        Parsing file arch/system_PIM.yaml for architecture info
+2024-04-02 01:42:52 WARNING     File arch/system_PIM.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/A2D_conversion_system.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/A2D_conversion_system.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/ADC_SimpleMulticast.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/ADC_SimpleMulticast.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/D2A_conversion_system.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/D2A_conversion_system.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/DAC_SimpleMulticast.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/DAC_SimpleMulticast.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/digital_accumulation_system.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/digital_accumulation_system.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/memcell_compute.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/memcell_compute.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/smartbuffer_SRAM.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/smartbuffer_SRAM.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:52 INFO        Parsing file arch/components/storage.yaml for compound_components info
+2024-04-02 01:42:52 WARNING     File arch/components/storage.yaml is outdated. File version is 0.4, while the latest version is 0.4. 
+2024-04-02 01:42:52 WARNING      Please update the file to the latest version.
+2024-04-02 01:42:53 INFO        primitive component file parsed: 
+2024-04-02 01:42:53 INFO        /usr/local/share/accelergy/primitive_component_libs/neurosim_components.lib.yaml
+2024-04-02 01:42:53 INFO        Calculated Architecture class memcell_compute attributes"nCells" as "datawidth/cell_datawidth" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated Architecture class memcell_compute attributes"nCycles" as "datawidth/DAC_datawidth" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated Architecture class DAC_SimpleMulticast attributes"num_converts" as "datawidth/DAC_datawidth" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated storage."technology" as "cell_technology" = memristor.
+2024-04-02 01:42:53 INFO        Calculated storage."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated storage."cellwidth" as "cell_datawidth" = 2.
+2024-04-02 01:42:53 INFO        Calculated system_arch.chip.PE[0..16383].scratchpad.read.read."technology" as "cell_technology" = memristor.
+2024-04-02 01:42:53 INFO        Calculated system_arch.chip.PE[0..16383].scratchpad.write.write."technology" as "cell_technology" = memristor.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nCells-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated cell[0..7]."technology" as "cell_technology" = memristor.
+2024-04-02 01:42:53 INFO        Calculated cell[0..7]."cellwidth" as "cell_datawidth" = 2.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nCells-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action compute action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated system_arch.chip.PE[0..16383].mac.compute.compute."technology" as "cell_technology" = memristor.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."datawidth" as "datawidth" = 16.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."DAC_datawidth" as "DAC_datawidth" = 1.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."cell_datawidth" as "cell_datawidth" = 2.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."nCells" as "datawidth/cell_datawidth" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."nArrays" as "nCells" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."nCycles" as "datawidth/DAC_datawidth" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."total_DACs" as "nArrays * meshY" = 1024.0.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter."DAC_converts_per_psum" as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "total_DACs-1" = 1023.0.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter.DAC[0..1023]."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter.DAC[0..1023]."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated D2A_converter.DAC[0..1023]."datawidth" as "DAC_datawidth" = 1.
+2024-04-02 01:42:53 INFO        Calculated index range expression as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "n_PE_cols" = 16.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nArrays-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "nCycles" = 16.0.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."datawidth" as "datawidth" = 16.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."ADC_datawidth" as "ADC_datawidth" = 8.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."cell_datawidth" as "cell_datawidth" = 2.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."n_DAC_cycles" as "n_DAC_cycles" = 16.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."nCells" as "datawidth/cell_datawidth" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."SH_datawidth" as "ADC_datawidth" = 8.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."total_SHs" as "nCells * n_PE_cols" = 64.0.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter."ADC_converts_per_psum" as "nCells * n_DAC_cycles" = 128.0.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "total_SHs-1" = 63.0.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.SH[0..63]."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.SH[0..63]."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.SH[0..63]."datawidth" as "SH_datawidth" = 8.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.ADC."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.ADC."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated A2D_converter.ADC."datawidth" as "ADC_datawidth" = 8.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."datawidth" as "datawidth" = 16.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."cell_datawidth" as "cell_datawidth" = 2.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."n_DAC_cycles" as "n_DAC_cycles" = 16.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."nCells" as "datawidth/cell_datawidth" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."nArrays" as "nCells" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."total_S_As" as "nArrays" = 8.0.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."S_A_datawidth" as "datawidth" = 16.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."S_As_per_psum" as "nCells * n_DAC_cycles" = 128.0.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator."buffer_per_psum" as "n_DAC_cycles -2" = 14.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator.S_A."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator.S_A."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator.S_A."datawidth" as "S_A_datawidth" = 16.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator.outputBuffer."technology" as "technology" = 32nm.
+2024-04-02 01:42:53 INFO        Calculated digital_accumulator.outputBuffer."latency" as "latency" = 1ns.
+2024-04-02 01:42:53 INFO        Calculated list index expression as "nCells-1" = 7.0.
+2024-04-02 01:42:53 INFO        Calculated action sample_and_hold action_share as "n_DAC_cycles" = 16.
+2024-04-02 01:42:53 INFO        Calculated action convert action_share as "ADC_converts_per_psum" = 128.0.
+2024-04-02 01:42:53 INFO        Calculated action shift_and_add action_share as "S_As_per_psum" = 128.0.
+2024-04-02 01:42:53 INFO        Calculated action read action_share as "buffer_per_psum" = 14.
+2024-04-02 01:42:53 INFO        Calculated action write action_share as "buffer_per_psum" = 14.
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-library-plugin/library.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-adc-plug-in/adc.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/dummy_tables/dummy.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-neurosim-plugin/neurosim.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-aladdin-plug-in/aladdin.estimator.yaml
+2024-04-02 01:42:53 INFO        Estimator plug-in identified by: /usr/local/share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/table.estimator.yaml
+2024-04-02 01:42:53 INFO        Getting all estimators in module <module 'python_plug_in' from '/usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_wrapper.py'>
+2024-04-02 01:42:53 INFO        Added estimator CactiCache that estimates cache with actions idle, read, read_access, update, update_access, write, write_access, leak
+2024-04-02 01:42:53 INFO        Added estimator CactiDRAM that estimates ['DRAM', 'dram'] with actions idle, read, update, write, leak
+2024-04-02 01:42:53 INFO        Added estimator CactiSRAM that estimates ['SRAM', 'sram'] with actions idle, read, update, write, leak
+2024-04-02 01:42:53 INFO        Found estimator plug-in: Library (<LibraryEstimator.LibraryEstimator object at 0x7f39d2ca02b0>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: ADC Plug-In (<ADCEstimator.ADCEstimator object at 0x7f39d2d8d900>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: dummy_table (<DummyTable.DummyTable object at 0x7f39d2c6fcd0>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: Neurosim Plug-In (<NeuroWrapper.NeuroWrapper object at 0x7f39d2b39270>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: Aladdin_table (<AladdinTable.AladdinTable object at 0x7f39d2b396f0>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: table-based-plug-ins (<SetsOfTables.SetsOfTables object at 0x7f39d2b951e0>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: CactiCache (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x7f39d2b967a0>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: CactiDRAM (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x7f39d2b96620>)
+2024-04-02 01:42:53 INFO        Found estimator plug-in: CactiSRAM (<accelergy.plug_in_interface.estimator_wrapper.EstimatorWrapper object at 0x7f39d2b94760>)
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for ReRAMcell_storage(technology=memristor, latency=1ns, cellwidth=2, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).read(technology=memristor, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0066p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for ReRAMcell_storage(technology=memristor, latency=1ns, cellwidth=2, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).write(technology=memristor, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for ReRAMcell_compute(technology=memristor, cellwidth=2, latency=100ns, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).compute(technology=memristor, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.00183p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for SRAM(depth=0, width=0, datawidth=0, n_rdwr_ports=0, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1).idle(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+Query: {'class_name': 'ReRAMcell_storage', 'attributes': {'technology': 'memristor', 'latency': '1ns', 'cellwidth': 2, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'read', 'arguments': {'technology': 'memristor', 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0066
+Query: {'class_name': 'ReRAMcell_storage', 'attributes': {'technology': 'memristor', 'latency': '1ns', 'cellwidth': 2, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'write', 'arguments': {'technology': 'memristor', 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'ReRAMcell_compute', 'attributes': {'technology': 'memristor', 'cellwidth': 2, 'latency': '100ns', 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'compute', 'arguments': {'technology': 'memristor', 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.00183
+Query: {'class_name': 'SRAM', 'attributes': {'depth': 0, 'width': 0, 'datawidth': 0, 'n_rdwr_ports': 0, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'technology': '32nm', 'n_instances': 1}, 'action_name': 'idle', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+Outcome: accuracy: 100, energy: 0.0
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0033p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for sample_and_hold(technology=32nm, latency=1ns, datawidth=8, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).sample_and_hold(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 8.13e-06p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for ADC(technology=32nm, latency=1ns, type=SAR, datawidth=8, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).convert(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 1.66p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for shift_and_add(technology=32nm, latency=1ns, datawidth=16, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).shift_and_add(global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0418p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, latency=1ns, width=16, depth=128, datawidth=16, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).read(address_delta=1, data_delta=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.192p with accuracy 100%. 
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        ENERGY ESTIMATION for SRAM(technology=32nm, latency=1ns, width=16, depth=128, datawidth=16, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1).write(address_delta=1, data_delta=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'DAC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0033
+Query: {'class_name': 'sample_and_hold', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 8, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'sample_and_hold', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 8.13e-06
+Query: {'class_name': 'ADC', 'attributes': {'technology': '32nm', 'latency': '1ns', 'type': 'SAR', 'datawidth': 8, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'convert', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 1.66
+Query: {'class_name': 'shift_and_add', 'attributes': {'technology': '32nm', 'latency': '1ns', 'datawidth': 16, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'shift_and_add', 'arguments': {'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+Outcome: accuracy: 100, energy: 0.0418
+Query: {'class_name': 'SRAM', 'attributes': {'technology': '32nm', 'latency': '1ns', 'width': 16, 'depth': 128, 'datawidth': 16, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'read', 'arguments': {'address_delta': 1, 'data_delta': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+Outcome: accuracy: 100, energy: 0.192
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.192p with accuracy 100%. 
+2024-04-02 01:42:53 WARNING     No action counts are specified as yaml input
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for SRAM(entries=262144, depth=16384, width=128, instances=1, word-bits=8, n_rdwr_ports=2, n_banks=4, block-size=16, network_read=D2A_NoC, network_update=A2D_NoC, latency=1ns, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        CactiSRAM estimated 4.24389e-07 with accuracy 80%. Messages:
+2024-04-02 01:42:53 INFO        | Unused arguments (entries, instances, word-bits, n_rdwr_ports, block-size, network_read, network_update, latency, global_cycle_seconds, action_latency_cycles, cycle_seconds, n_instances, datawidth) provided for ['SRAM', 'sram'].__init__. Arguments used: (depth, width, n_banks, technology)
+2024-04-02 01:42:53 INFO        | Calling CACTI with cache_size=262144 n_rw_ports=1 block_size=16 tech_node_um=0.032 n_banks=4 tag_size=0 associativity=1
+2024-04-02 01:42:53 INFO        | Calling CACTI with input path /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp1o_mmx0s
+2024-04-02 01:42:53 INFO        | CACTI output will be written to /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpiziapai2
+2024-04-02 01:42:53 INFO        | CACTI executable not found at /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti/cacti
+2024-04-02 01:42:53 INFO        | Calling: cd /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in ; ./cacti -infile /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmp1o_mmx0s >> /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti_inputs_outputs/tmpiziapai2 2>&1
+2024-04-02 01:42:53 INFO        | Cache bandwidth: 64.0 bits/cycle
+2024-04-02 01:42:53 INFO        | Cache bandwidth: 335.98887036866904 Gbits/second
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for DRAM(type=LPDDR4, width=64, datawidth=16, block-size=4, latency=1ns, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+Query: {'class_name': 'SRAM', 'attributes': {'technology': '32nm', 'latency': '1ns', 'width': 16, 'depth': 128, 'datawidth': 16, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'cycle_seconds': 1.2e-09, 'n_instances': 1}, 'action_name': 'write', 'arguments': {'address_delta': 1, 'data_delta': 1, 'global_cycle_seconds': 1.2e-09, 'action_latency_cycles': 1, 'technology': '32nm', 'n_instances': 1}}
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+Outcome: accuracy: 100, energy: 0.192
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '0', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '0', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:16384 in row {'technology': '32nm', 'datawidth': '0', 'width': '0', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+2024-04-02 01:42:53 INFO        CactiDRAM estimated 0 with accuracy 80%. Messages:
+2024-04-02 01:42:53 INFO        | Unused arguments (datawidth, block-size, latency, global_cycle_seconds, action_latency_cycles, cycle_seconds, technology, n_instances) provided for ['DRAM', 'dram'].__init__. Arguments used: (type, width)
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for ReRAMcell_storage(technology=memristor, latency=1ns, cellwidth=2, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for ReRAMcell_compute(technology=memristor, cellwidth=2, latency=100ns, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.001525879u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for SRAM(depth=0, width=0, datawidth=0, n_rdwr_ports=0, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, technology=32nm, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for DAC(technology=32nm, latency=1ns, datawidth=1, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.166u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for sample_and_hold(technology=32nm, latency=1ns, datawidth=8, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 0.0390625u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for ADC(technology=32nm, latency=1ns, type=SAR, datawidth=8, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 1200.0u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for shift_and_add(technology=32nm, latency=1ns, datawidth=16, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 60.0u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        
+2024-04-02 01:42:53 INFO        AREA ESTIMATION for SRAM(technology=32nm, latency=1ns, width=16, depth=128, datawidth=16, global_cycle_seconds=1.2e-09, action_latency_cycles=1, cycle_seconds=1.2e-09, n_instances=1)
+2024-04-02 01:42:53 INFO        table-based-plug-ins estimated 770.0u^2 with accuracy 100%. Messages:
+2024-04-02 01:42:53 INFO        | Multiplying by n_instances 1
+2024-04-02 01:42:53 INFO        flattened architecture is saved to:
+2024-04-02 01:42:53 INFO        ./outputs/timeloop-mapper.flattened_architecture.yaml
+2024-04-02 01:42:53 INFO        energy reference table is saved to:
+2024-04-02 01:42:53 INFO        ./outputs/timeloop-mapper.ERT.yaml
+2024-04-02 01:42:53 INFO        energy reference table summary is saved to:
+2024-04-02 01:42:53 INFO        ./outputs/timeloop-mapper.ERT_summary.yaml
+2024-04-02 01:42:53 WARNING     no runtime energy estimations are generated... not generating energy_estimation.yaml
+2024-04-02 01:42:53 INFO        area reference table is saved to:
+2024-04-02 01:42:53 INFO        ./outputs/timeloop-mapper.ART.yaml
+2024-04-02 01:42:53 INFO        area reference table summary is saved to:
+2024-04-02 01:42:53 INFO        ./outputs/timeloop-mapper.ART_summary.yaml
+No attribute match for class DRAM and attribute width:64 in row {'technology': '32nm', 'width': '256', 'action': 'read', 'energy': '5.81E+01', 'area': '83000', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class DRAM and attribute width:64 in row {'technology': '32nm', 'width': '256', 'action': 'write', 'energy': '5.81E+01', 'area': '83000', 'comment': ''}.
+No attribute match for class DRAM and attribute width:64 in row {'technology': '32nm', 'width': '256', 'action': 'idle', 'energy': '0', 'area': '83000', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '128', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.92E-01', 'area': '770', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '8', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute width:0 in row {'technology': '32nm', 'datawidth': '0', 'width': '16', 'depth': '0', 'latency': '1ns', 'action': 'idle', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '0', 'area': '0', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': 'energy in pJ;  area in um^2'}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1152', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.23E+00', 'area': '2870', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'read', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.
+No attribute match for class SRAM and attribute depth:128 in row {'technology': '32nm', 'datawidth': '16', 'width': '16', 'depth': '1024', 'latency': '1ns', 'action': 'write', 'address_delta': '1', 'data_delta': '1', 'global_cycle_seconds': '1.2e-09', 'action_latency_cycles': '1', 'n_instances': '1', 'energy': '1.03E+00', 'area': '2100', 'comment': ''}.

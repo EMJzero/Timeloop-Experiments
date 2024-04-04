@@ -1,0 +1,9 @@
+mapper:
+  optimization-metric: [ edp, delay, energy ]
+  live-status: False
+  num-threads: 12
+  # keep those high enough to see all combinations!
+  timeout: 15000
+  victory-condition: 800
+  diagnostics: False
+

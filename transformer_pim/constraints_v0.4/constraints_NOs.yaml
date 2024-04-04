@@ -1,0 +1,63 @@
+constraints:
+  version: 0.4
+  #template: ruby
+  targets:
+    # REMEMBER:
+    # D from the KTQ is the E here
+    # L from the KTQ is the L here
+    # lock E and D at 1 in the memory hierarchy down to the level at which to perform fusion!
+    # (if already DRAM has D or E not 1, you can't fuse...)
+
+    # =======================================
+    # DRAM
+    # =======================================
+    - target: DRAM
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs]  # weights are fakes here
+    #- target: DRAM
+    #  type: temporal
+    #  factors: D=1 E=1 # copied from KTQ mapping, see REMEMBER!
+    #  permutation: DEL
+    # =======================================
+    # Global Buffer Constraints
+    # =======================================
+    - target: shared_glb
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs] # weights are fakes here
+    #- target: shared_glb
+    #  type: temporal
+    #  factors: D=1 E=1
+    # =======================================
+    # Global Buffer Constraints
+    # =======================================
+    - target: IMC_as_buffer
+      type: dataspace
+      keep: []
+      bypass: [Inputs, Weights, Outputs] # weights are fakes here
+    # =======================================
+    # Dummy Buffer Constraints
+    # =======================================
+    #- target: dummy_buffer
+    #  type: dataspace
+    #  keep: []
+    #  bypass: [Inputs, Outputs, Weights]  # no data should be stored in dummy, it is just a transition buffer
+    #- target: dummy_buffer
+    #  type: spatial
+    #  factors: [L=1, D=1]
+    #- target: dummy_buffer
+    #  type: temporal
+    #  factors: [D=1, E=1]
+    # =======================================
+    # WS Buffer Constraints
+    # =======================================
+    - target: registers
+      type: dataspace
+      keep: [Weights, Outputs]
+      bypass: [Inputs]
+    - target: registers
+      type: temporal
+      factors: [D=1, E=1]  # single weight tile that does not change
+
+# IMPORTANT: we do not store any output either, values are updated in place!

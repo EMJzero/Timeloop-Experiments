@@ -1,0 +1,90 @@
+architecture:
+  version: 0.4
+  nodes:
+  - !Container
+    name: System
+    attributes:
+      latency: "1ns"
+    
+  - !Component
+    name: DRAM
+    class: DRAM
+    attributes:
+      type: "LPDDR4"
+      instances: 1
+      datawidth: 8
+      width: 64 # replaces block_size, dunno why...
+      #block_size: 64
+      shared_bandwidth: 8
+
+  - !Container
+    name: Chip
+    attributes:
+      technology: "32nm"
+
+  - !Component
+    name: Scratchpad 
+    class: SRAM
+    attributes:
+      entries: 262144
+      depth: 16384
+      width: 128
+      instances: 1
+      meshX: 1
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 4
+  
+  - !Container
+    name: PERows
+    spatial: {meshY: 16} # was 16
+    constraints:
+      spatial:
+        factors: [E=1, L=1] # weight or output stationary
+
+  - !Component
+    name: Accumulator
+    class: SRAM
+    attributes:
+      # ADJUSTED TO 128KB!
+      entries: 32768 #1024 # acc size / pe_dim = 16384/16
+      depth: 32768 #1024
+      width: 32
+      datawidth: 32
+      network_word_bits: 16
+      n_rdwr_ports: 2
+      n_banks: 2
+      #instances: 16 # was 16
+      meshY: 16 # was instances
+  
+  - !Container
+    name: PECols # only the K dim can be parallelized across Accumulator columns
+    spatial: {meshX: 16} # was 16
+    constraints:
+      spatial:
+        #factors: [D=1, E=1] # output stationary
+        factors: [D=1, L=1] # weight stationary
+        #factors: [D=1] # weight or output stationary
+
+  - !Component
+    name: Registers
+    class: SRAM
+    attributes:
+      depth: 1
+      width: 8
+      entries: 1 # one space, either for the output or weight
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 1
+      #instances: 256 # was 256
+      meshX: 16 # was instances
+      meshY: 16 # was instances
+  
+  - !Component
+    name: MAC
+    class: intmac
+    attributes:
+      multiplier_width: 8 # was datawidth
+      adder_width: 32 # same as accumulator datawidth
+      meshX: 16
+      meshY: 16

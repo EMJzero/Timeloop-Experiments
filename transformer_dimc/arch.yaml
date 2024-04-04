@@ -1,0 +1,64 @@
+architecture:
+  version: 0.3
+
+  subtree:
+  - name: System
+    local:
+    - name: DRAM
+      class: DRAM
+      attributes:
+        type: LPDDR4
+        instances: 1
+        word-bits: 8
+        block_size: 64
+        shared_bandwidth: 8
+
+    subtree:
+    - name: Chip
+      attributes:
+        technology: "40nm"
+      local:
+      # Remember: word-bits*block-size == width 
+      - name: Scratchpad 
+        class: SRAM
+        attributes:
+          entries: 262144 # number of 8-bit entries
+          depth: 16384 # rows
+          width: 128 # cols per row, you read one row (width-bits) at a time
+          instances: 1
+          word-bits: 8
+          n_rdwr_ports: 2
+          n_banks: 4
+          block-size: 16
+      - name: IMC_module
+        class: SRAM
+        attributes:
+          entries: 1024
+          depth: 1024
+          width: 8
+          word-bits: 8
+          instances: 1
+          n_rdwr_ports: 1
+          n_banks: 1
+          block-size: 1
+          network_read: free_network
+          network_update: free_network
+      - name: free_network
+        class: Legacy
+        attributes:
+          network_type: 1:N
+          datawidth: 16
+          router_energy: 0
+          wire_energy: 0
+          energy_per_hop: 0
+      subtree:
+        - name: PEs[0..1023]
+          local:
+          - name: MAC
+            class: intmac
+            attributes:
+              word-bits: 8
+              meshX: 32 # number of components in the X dimension (PE rows)
+              meshY: 32 # number of components in the Y dimension (PE cols)
+              network_operand: free_network
+              network_result: free_network

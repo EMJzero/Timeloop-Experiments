@@ -1,0 +1,63 @@
+architecture:
+  version: 0.3
+  subtree:                           # "subtree" contains abstract hierarchies
+    - name: system_arch              # name of the design
+      attributes:                    # shared attributes that will propagate down all lower levels
+        technology: 32nm
+        latency: 1ns
+      local:
+        - name: DRAM                 # offchip DRAM is the source of all datatypes
+          class: DRAM                # assume DRAM is large enough to store all the data, so no depth specification needed
+          attributes:
+            width: 64                # width in bits
+            datawidth: 16            # datawidth in bits
+            block-size: 4
+      subtree:
+        - name: chip                 # all components below this level are on-chip components
+          local:
+            - name: shared_glb
+              class: SRAM # the smartbuffer caused issues with the stats.txt output
+              attributes:
+                entries: 262144 # number of 8-bit entries
+                depth: 16384 # rows
+                width: 128 # cols per row, you read one row (width-bits) at a time
+                instances: 1
+                word-bits: 8
+                n_rdwr_ports: 2
+                n_banks: 4
+                block-size: 16
+            - name: IMC_as_buffer
+              class: memcell_storage
+              attributes:
+                entries: 32768 # number of 8-bit entries
+                depth: 16384 # rows
+                width: 16 # cols per row, you read one row (width-bits) at a time
+                instances: 1
+                word-bits: 8
+                n_rdwr_ports: 1
+                n_banks: 1
+                block-size: 2
+            - name: dummy_buffer
+              class: dummy_storage
+              attributes:
+                depth: 0   # will result in zero area/energy for accelergy
+                width: 16  # timeloop needs a width even if the memory is not storing anything
+          subtree:
+            - name: PE[0..1023] # assuming a NOs module that works on cols of 1024 elements
+              local:
+                - name: registers
+                  class: SRAM
+                  attributes:
+                    vector_access_energy: 0 # fake weights have 0 cost
+                    addr_gen_energy: 0 # fake weights have 0 cost
+                    cluster_area: 0 # fake weights have 0 cost
+                    width: 16       # width in bits
+                    depth: 2
+                    meshX: 1024        # number of components in the X dimension (PE rows)
+                - name: mac
+                  class: intmac
+                  attributes:
+                    energy: 0 # add manually the operation cost of the NO module
+                    area: 0 # add manually the area cost of the NO module
+                    datawidth: 16   # datawidth in bits
+                    meshX: 1024        # number of components in the X dimension (PE rows)
