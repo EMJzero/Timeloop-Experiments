@@ -29,7 +29,10 @@ architecture:
         n_rdwr_ports: 2
         n_banks: 4
         block_size: 16
+        read_bandwidth: 16 # = n_rdwr_ports*datawidth
+        write_bandwidth: 16 # = n_rdwr_ports*datawidth
     
+    #NOTE: consider removing this if you use IMC only as a compute element...
     - !Component
       name: IMC_as_buffer
       class: memcell_storage
@@ -42,6 +45,8 @@ architecture:
         n_rdwr_ports: 1
         n_banks: 1
         block_size: 2
+        read_bandwidth: 16 # = n_rdwr_ports*datawidth
+        write_bandwidth: 16 # = n_rdwr_ports*datawidth
   
     - !Container
       name: PE
@@ -85,10 +90,13 @@ architecture:
    
     - !Component
       name: mac
-      class: intmac
+      class: free_compute
       attributes:
-        energy: 0 # add manually the operation cost of the NO module
-        area: 0 # add manually the area cost of the NO module
+        multiplier_width: 8
+        adder_width: 8
+        technology: "free"
+        #energy: 0 # add manually the operation cost of the NO module
+        #area: 0 # add manually the area cost of the NO module
         datawidth: 16   # datawidth in bits
         meshY: 128        # number of components in the X dimension (PE rows)
         #network_operand: free_network

@@ -104,7 +104,7 @@ if is_fusion:
         # Apply fusion constraints
         found = []
         for target in spec.constraints['targets']:
-            if target['target'] in memory_levels[-1:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
+            if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
                 found.append(target['target'])
                 target.factors = constrained_factors
                 print(f"Updating constraint: {dict(target.items())}")
@@ -130,14 +130,14 @@ if is_fusion:
         #    spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'keep': ["Inputs", "Weights"], 'bypass': ["Outputs"]}))
         #    print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
         
-        # THE LEVEL AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
+        # THE LEVEL(s) AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
         for target in spec.constraints['targets']:
-            if target['target'] == memory_levels[level_for_fusion] and target['target'] and target['type'] == "temporal":
+            if target['target'] in memory_levels[0:level_for_fusion+1] and target['target'] and target['type'] == "temporal":
                 found.append(target['target'])
-                target['permutation'] = ['E', 'D', 'L']
+                target['permutation'] = tl.constraints.Permutation(['E', 'D', 'L'])
                 print(f"Updating constraint: {dict(target.items())}")
                 break
-        if len(found) == 0:
+        for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion+1])):
             spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': memory_levels[level_for_fusion], 'type': 'temporal', 'permutation': ['E', 'D', 'L']}))
             print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
     

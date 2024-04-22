@@ -47,4 +47,4 @@ constraints:
       bypass: [Inputs, Outputs]
     - target: scratchpad
       type: temporal
-      factors: [D=1, E=1]  # single weight tile that does not change
+      factors: [D=1, E=1, L=1]  # remove L=1 if the IMC can buffer multiple columns of the input and run matmul instead of vec-matmul!

@@ -5,9 +5,17 @@ variables:
   #latency: "1ns"
 
   # defaults for BERT-base
-  EMBEDDING: 768
-  SEQ_LENGTH: 512
-  HEADS: 12
-  FF_DIM: 3072
+  #EMBEDDING: 768
+  #SEQ_LENGTH: 512
+  #HEADS: 12
+  #FF_DIM: 3072
+  #EMBEDDING//HEADS: 64
+  #EMBEDDING*3: 2304
+
+  # defaults for BERT-large
+  EMBEDDING: 1024
+  SEQ_LENGTH: 4096
+  HEADS: 16
+  FF_DIM: 4096
   EMBEDDING//HEADS: 64
-  EMBEDDING*3: 2304
+  EMBEDDING*3: 3072

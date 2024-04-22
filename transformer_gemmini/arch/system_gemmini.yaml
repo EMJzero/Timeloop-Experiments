@@ -26,14 +26,19 @@ architecture:
     name: Scratchpad 
     class: SRAM
     attributes:
-      entries: 262144
-      depth: 16384
+      # ADJUSTED TO 512KB! #256KB!
+      entries: 262144*2
+      depth: 16384*2
       width: 128
       instances: 1
       meshX: 1
       datawidth: 8
       n_rdwr_ports: 2
       n_banks: 4
+      read_bandwidth: 16 # = n_rdwr_ports*datawidth
+      write_bandwidth: 16 # = n_rdwr_ports*datawidth
+      network_fill_latency: 1
+      network_drain_latency: 1
   
   - !Container
     name: PERows
@@ -46,16 +51,20 @@ architecture:
     name: Accumulator
     class: SRAM
     attributes:
-      # ADJUSTED TO 128KB!
-      entries: 32768 #1024 # acc size / pe_dim = 16384/16
-      depth: 32768 #1024
+      # ADJUSTED TO 256KB! #128KB!
+      entries: 2048*2 #1024 # acc size / pe_dim = 16384/16
+      depth: 2048*2 #1024
       width: 32
       datawidth: 32
       network_word_bits: 16
       n_rdwr_ports: 2
       n_banks: 2
+      read_bandwidth: 64 # = n_rdwr_ports*datawidth
+      write_bandwidth: 64 # = n_rdwr_ports*datawidth
       #instances: 16 # was 16
       meshY: 16 # was instances
+      network_fill_latency: 1
+      network_drain_latency: 1
   
   - !Container
     name: PECols # only the K dim can be parallelized across Accumulator columns
@@ -76,6 +85,7 @@ architecture:
       datawidth: 8
       n_rdwr_ports: 2
       n_banks: 1
+      #no bandwidth specified = infinite bandwidth
       #instances: 256 # was 256
       meshX: 16 # was instances
       meshY: 16 # was instances

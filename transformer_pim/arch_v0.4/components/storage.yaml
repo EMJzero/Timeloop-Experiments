@@ -46,7 +46,7 @@ compound_components:
         cmos_technology: "32nm"
         depth: 256
         width: 16
-        cell_datawidth: 2
+        cell_datawidth: 2 # those are the bits per SRAM cell
       subcomponents:
         - name: storage
           class: ReRAMcell_storage

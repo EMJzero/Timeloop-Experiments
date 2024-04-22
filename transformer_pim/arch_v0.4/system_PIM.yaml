@@ -32,6 +32,8 @@ architecture:
         n_rdwr_ports: 2
         n_banks: 4
         block_size: 16
+        read_bandwidth: 16 # = n_rdwr_ports*datawidth
+        write_bandwidth: 16 # = n_rdwr_ports*datawidth
         network_read: "D2A_NoC"
         network_update: "A2D_NoC"
 
@@ -79,14 +81,14 @@ architecture:
         network_drain: "A2D_NoC"
 
     - !Container
-      name: PE_column
-      spatial: {meshX: 128}
+      name: PERows
+      spatial: {meshY: 128}
       #attributes:
       #  network_fill: "D2A_NoC"
       #  network_drain: "A2D_NoC"
       constraints:
         spatial:
-          factors: [L=1, D=1]
+          factors: [L=1, E=1, 'D>=32']
         temporal:
           factors: [D=1, E=1]
         dataspace:
@@ -94,14 +96,14 @@ architecture:
           bypass: [Inputs, Outputs, Weights]
 
     - !Container
-      name: PE
-      spatial: {meshY: 128}
+      name: PECols
+      spatial: {meshX: 128}
       #attributes:
       #  network_fill: "D2A_NoC"
       #  network_drain: "A2D_NoC"
       constraints:
         spatial:
-          factors: [L=1, E=1]
+          factors: [L=1, D=1, 'E>=32']
         temporal:
           factors: [D=1, E=1]
         dataspace:

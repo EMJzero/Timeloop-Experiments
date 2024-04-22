@@ -69,4 +69,14 @@ constraints:
       bypass: [Inputs, Outputs]
     - target: Registers
       type: temporal
-      factors: [E=1, D=1] # could add L=1...it can store one value anyway!
+      factors: [E=1, D=1]
+    # =======================================
+    # OS Registers Constraints
+    # =======================================
+    #- target: Registers
+    #  type: dataspace
+    #  keep: [Outputs]
+    #  bypass: [Inputs, Weights]
+    #- target: Registers
+    #  type: temporal
+    #  factors: [D=1, L=1]

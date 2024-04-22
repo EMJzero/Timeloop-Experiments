@@ -15,9 +15,9 @@ constraints:
       type: dataspace
       keep: [Inputs]
       bypass: [Weights, Outputs]  # weights are fakes here
-    #- target: DRAM
-    #  type: temporal
-    #  factors: D=1 E=1 # copied from KTQ mapping, see REMEMBER!
+    - target: DRAM
+      type: temporal
+      factors: D=1 E=1 # copied from KTQ mapping, see REMEMBER!
     #  permutation: DEL
     # =======================================
     # Global Buffer Constraints
