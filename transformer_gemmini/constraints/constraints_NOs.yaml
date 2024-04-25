@@ -6,8 +6,8 @@ constraints:
     # =======================================
     - target: DRAM
       type: dataspace
-      keep: [Inputs]
-      bypass: [Weights, Outputs] # the previous matmul accounts for the cost of writing outputs!
+      keep: [Inputs, Outputs]
+      bypass: [Weights] # the previous matmul accounts for the cost of writing outputs!
     #- target: DRAM
     #  type: temporal
     #  factors: D=1 E=1
@@ -17,8 +17,8 @@ constraints:
     # =======================================
     - target: Scratchpad
       type: dataspace
-      keep: [Inputs] # REMOVE INPUTS FROM HERE WHEN FUSING AT THE ACCUMULATOR!
-      bypass: [Weights, Outputs] # Indeed bypassing here Inputs (fusion) helps!
+      keep: [Inputs, Outputs] # REMOVE INPUTS FROM HERE WHEN FUSING AT THE ACCUMULATOR!
+      bypass: [Weights] # Indeed bypassing here Inputs (fusion) helps!
     #- target: Scratchpad
     #  type: temporal
     #  factors: [E=1, D=1]
@@ -31,7 +31,7 @@ constraints:
     - target: Accumulator
       type: dataspace
       keep: [Inputs]
-      bypass: [Outputs, Weights]
+      bypass: [Weights, Outputs]
       #no_coalesce: [Inputs, Outputs, Weights]
     #- target: Accumulator
     #  type: temporal
@@ -41,7 +41,14 @@ constraints:
     #  factors: [E=1, D=1]
     #- target: Accumulator
     #  type: temporal
-    #  factors: [E=1, D=1]
+    #  factors: [E=1, D=1, L>=4]
+    - target: Accumulator
+      type: temporal
+      permutation: [E, D, L]
+      maximize_dims: [[E], [L]]
+      # the first parenthesis is the number of entries in the Accumulator (only inputs kept), the second
+      # parenthesis is the size of the registers at the PE level, see "E" factor below (line 79) !
+      maximize_dims_capacity: (16384*4) // (1024)
     # =======================================
     # WS Registers Constraints
     # =======================================
@@ -52,14 +59,24 @@ constraints:
       #no_coalesce: [Inputs, Outputs, Weights]
     - target: Registers
       type: temporal
-      # 0 is a special factor, it means to use the full dimension!
-      factors: [E=0, D=0] #[E=64, D=1]
-      permutation: [E, D, L]
-    - target: Registers_Inputs
-      type: dataspace
-      keep: [Inputs]
-      bypass: [Weights, Outputs]
+      factors: [D=1, E=1, L=1]
     - target: Registers_Outputs
       type: dataspace
       keep: [Outputs]
       bypass: [Inputs, Weights]
+    - target: Registers_Outputs
+      type: temporal
+      factors: [D=1, E=1, L=1]
+    - target: Registers_Inputs
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs]
+    - target: Registers_Inputs
+      type: temporal
+      # fix E to the number of entries in the Input and Output register files!
+      # letting D to 0 here avoids searching for bad mappings, as it does all sweeps over a column in one shot!
+      factors: [E=1024, L=1] # D=0
+      # from inner to outer: column sweep, next sweep, change column
+      permutation: [E, D, L]
+
+# 0 is a special factor, it means to use the full dimension!

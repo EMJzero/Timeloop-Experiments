@@ -39,7 +39,7 @@ constraints:
       type: temporal
       factors: [D=1, E=1, L=1]
     # =======================================
-    # WS Buffer Constraints
+    # WS IMC Constraints
     # =======================================
     - target: scratchpad
       type: dataspace

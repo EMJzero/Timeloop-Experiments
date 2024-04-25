@@ -1,0 +1,96 @@
+architecture:
+  # This is the Timeloop version to use. Only 0.2, 0.3 and 0.4 are allowed, see "timeloop/src/model/engine.cpp" line 41!
+  version: 0.4
+  nodes: # Top-level is hierarchical
+  - !Container # Top-level system
+    name: system
+
+  - !Component # DRAM main memory
+    name: DRAM
+    class: DRAM
+    attributes:
+      type: "LPDDR4"
+      width: 64
+      datawidth: DATAWIDTH
+
+  - !Container # OS accelerator
+    name: simple_os
+    #attributes:
+    #  technology: "45nm"
+
+  - !Component # Shared global buffer
+    name: shared_glb
+    class: SRAM # was smartbuffer_SRAM
+    attributes:
+      depth: 16384
+      width: 64
+      n_banks: 32
+      datawidth: DATAWIDTH
+      read_bandwidth: DATAWIDTH
+      write_bandwidth: DATAWIDTH
+
+  - !Container # Array of PEs
+    name: PE
+    spatial: {meshX: 16, meshY: 16}
+    constraints:
+      spatial:
+        permutation: [L, D]
+        split: 1
+        factors: [L=1, D=1]
+
+  - !Component # PE Scratchpad
+    name: pe_spad
+    class: SRAM # was smartbuffer_SRAM
+    attributes:
+      depth: 192
+      width: DATAWIDTH
+      datawidth: DATAWIDTH
+    constraints:
+      dataspace: {bypass: [Inputs, Weights], keep: [Outputs]}
+      temporal: {permutation: [L, D]}
+
+  - !Parallel # Register for each data type
+    nodes:
+    - !Component # Weight register
+      name: weight_reg
+      class: storage
+      subclass: aladdin_register
+      attributes:
+        depth: 1
+        width: DATAWIDTH           # width in bits
+        datawidth: DATAWIDTH
+      constraints:
+        dataspace: {keep: [Weights]}
+        # Fix them as to target exactly one weight, a specific weight!
+        temporal: {factors: [E=1, D=1]}
+
+    - !Component # Input activation register
+      name: input_activation_reg
+      class: storage
+      subclass: aladdin_register
+      attributes:
+        depth: 1
+        width: DATAWIDTH           # width in bits
+        datawidth: DATAWIDTH
+      constraints:
+        dataspace: {keep: [Inputs]}
+        temporal: {factors: [L=1, E=1]} #likely wrong
+
+    - !Component # Output activation register
+      name: output_activation_reg
+      class: storage
+      subclass: aladdin_register
+      attributes:
+        depth: 1
+        width: DATAWIDTH           # width in bits
+        datawidth: DATAWIDTH
+      constraints:
+        dataspace: {keep: [Outputs]}
+        temporal: {factors: [L=1, D=1]} #likely wrong
+
+  - !Component # MAC unit
+    name: mac
+    class: intmac
+    attributes:
+      multiplier_width: DATAWIDTH
+      adder_width: DATAWIDTH * 2

@@ -1,0 +1,25 @@
+problem:
+  version: 0.4
+  shape:
+    name: KQV_matmul_encoder
+    dimensions: [ L, E, D ]
+    data_spaces:
+    # Wk, Wq, Wv are all concatenated in one
+    - name: Weights
+      projection:
+        - [ [D] ]
+        - [ [E] ]
+    - name: Inputs
+      projection:
+        - [ [E] ]
+        - [ [L] ]
+    - name: Outputs
+      projection:
+        - [ [D] ]
+        - [ [L] ]
+      read_write: true
+  instance:
+    # BERT-base
+    L: 512
+    E: 768
+    D: 768

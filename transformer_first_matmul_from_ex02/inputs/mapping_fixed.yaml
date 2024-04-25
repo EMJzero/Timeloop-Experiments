@@ -1,0 +1,35 @@
+mapping:
+  - target: DRAM
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: shared_glb
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: shared_glb
+    type: spatial
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: pe_spad
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: weight_reg
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: input_activation_reg
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED
+
+  - target: output_activation_reg
+    type: temporal
+    factors: L=1 D=1 E=1
+    permutation: LED

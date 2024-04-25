@@ -1,24 +1,24 @@
 problem:
   version: 0.4
   shape:
-    name: KQV_matmul_encoder
+    name: LN_matmul_encoder
     dimensions: [ L, E, D ]
+    # modelled as a point-wise function that is constrained to run 3 times on a column before moving on!
     data_spaces:
-    # Wk, Wq, Wv are all concatenated in one
     - name: Weights
       projection:
         - [ [D] ]
-        - [ [E] ]
     - name: Inputs
       projection:
         - [ [E] ]
         - [ [L] ]
     - name: Outputs
       projection:
-        - [ [D] ]
+        #- [ [D] ]
+        - [ [E] ]
         - [ [L] ]
       read_write: True
   instance:
     L: SEQ_LENGTH
     E: EMBEDDING
-    D: 1
+    D: 3 # layernorm must always do 3 sweeps!

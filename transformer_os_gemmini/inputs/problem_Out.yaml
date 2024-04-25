@@ -1,24 +1,23 @@
 problem:
   version: 0.4
   shape:
-    name: SM_matmul_encoder
+    name: Out_matmul_encoder
     dimensions: [ L, E, D ]
-    # modelled as a point-wise function that is constrained to run 3 times on a column before moving on!
     data_spaces:
     - name: Weights
       projection:
         - [ [D] ]
+        - [ [E] ]
     - name: Inputs
       projection:
         - [ [E] ]
         - [ [L] ]
     - name: Outputs
       projection:
-        #- [ [D] ]
-        - [ [E] ]
+        - [ [D] ]
         - [ [L] ]
       read_write: True
   instance:
     L: SEQ_LENGTH
-    E: SEQ_LENGTH
-    D: 2 # use 3 with if max_subtraction_trick is used!
+    E: EMBEDDING
+    D: EMBEDDING

@@ -13,29 +13,36 @@ constraints:
     # =======================================
     - target: DRAM
       type: dataspace
-      keep: [Inputs]
-      bypass: [Weights, Outputs]  # weights are fakes here
-    - target: DRAM
-      type: temporal
-      factors: D=1 E=1 # copied from KTQ mapping, see REMEMBER!
+      keep: [Inputs, Outputs]
+      bypass: [Weights]  # weights are fakes here
+    #- target: DRAM
+    #  type: temporal
+    #  factors: D=1 E=1 # copied from KTQ mapping, see REMEMBER!
     #  permutation: DEL
     # =======================================
     # Global Buffer Constraints
     # =======================================
     - target: shared_glb
       type: dataspace
-      keep: [Inputs]
-      bypass: [Weights, Outputs] # weights are fakes here
-    #- target: shared_glb
-    #  type: temporal
-    #  factors: D=1 E=1
+      keep: [Inputs, Outputs]
+      bypass: [Weights] # weights are fakes here
+    - target: shared_glb
+      type: temporal
+      permutation: [E, D, L]
+      maximize_dims: [[E], [L]]
+      # the first parenthesis is the number of entries in the Accumulator (shared between inputs and outputs), the
+      # second parenthesis is the size of the registers at the PE level, see "E" factor below (line 79) !
+      maximize_dims_capacity: (16384*4*4) // (1024*2)
     # =======================================
     # Global Buffer Constraints
     # =======================================
     - target: IMC_as_buffer
       type: dataspace
       keep: []
-      bypass: [Inputs, Weights, Outputs] # weights are fakes here
+      bypass: [Inputs, Weights, Outputs] # currently unused
+    - target: IMC_as_buffer
+      type: temporal
+      factors: [D=1, E=1, L=1] # currently unused
     # =======================================
     # Dummy Buffer Constraints
     # =======================================
@@ -50,14 +57,33 @@ constraints:
     #  type: temporal
     #  factors: [D=1, E=1]
     # =======================================
-    # WS Buffer Constraints
+    # WS Registers Constraints
     # =======================================
-    - target: registers
+    - target: Registers
       type: dataspace
-      keep: [Weights, Outputs]
-      bypass: [Inputs]
-    - target: registers
+      keep: [Weights]
+      bypass: [Inputs, Outputs]
+      #no_coalesce: [Inputs, Outputs, Weights]
+    - target: Registers
       type: temporal
-      factors: [D=1, E=1]  # single weight tile that does not change
+      factors: [D=1, E=1, L=1]
+    - target: Registers_Outputs
+      type: dataspace
+      keep: [Outputs]
+      bypass: [Inputs, Weights]
+    - target: Registers_Outputs
+      type: temporal
+      factors: [D=1, E=1, L=1]
+    - target: Registers_Inputs
+      type: dataspace
+      keep: [Inputs]
+      bypass: [Weights, Outputs]
+    - target: Registers_Inputs
+      type: temporal
+      # fix E to the number of entries in the Input and Output register files!
+      # letting D to 0 here avoids searching for bad mappings, as it does all sweeps over a column in one shot!
+      factors: [E=1024, L=1] # D=0
+      # from inner to outer: column sweep, next sweep, change column
+      permutation: [E, D, L]
 
 # IMPORTANT: we do not store any output either, values are updated in place!

@@ -1,0 +1,11 @@
+variables:
+  version: 0.4
+  technology: "45nm"
+  global_cycle_seconds: 1e-9
+  DATAWIDTH: {{datawidth_jinja|default(16)}} # 16 bits is the default
+
+  # defaults for BERT-base
+  EMBEDDING: {{embedding_jinja|default(768)}}
+  SEQ_LENGTH: {{seq_len_jinja|default(512)}}
+  HEADS: {{heads_jinja|default(12)}}
+  FF_DIM: {{ff_dim_jinja|default(3072)}}

@@ -1,131 +1,131 @@
 architecture:
   version: 0.4
   nodes:
-    - !Container
-      name: system_arch              # name of the design
-      attributes:                    # shared attributes that will propagate down all lower levels
-        latency: "1ns"
-        
-    - !Component
-      name: DRAM                 # offchip DRAM is the source of all datatypes
-      class: DRAM                # assume DRAM is large enough to store all the data, so no depth specification needed
-      attributes:
-        type: "LPDDR4"
-        width: 64                # width in bits
-        # MAKE ME 8 BIT!
-        datawidth: 16 # same as word_bits
-        block_size: 4
+  - !Container
+    name: system_arch              # name of the design
+    attributes:                    # shared attributes that will propagate down all lower levels
+      latency: "1ns"
       
-    - !Container
-      name: chip                 # all components below this level are on-chip components
-
-    - !Component
-      name: shared_glb
-      class: SRAM # the smartbuffer caused issues with the stats.txt output
-      attributes:
-        entries: 262144 # number of 8-bit entries
-        depth: 16384 # rows
-        width: 128 # cols per row, you read one row (width-bits) at a time
-        instances: 1
-        # MAKE ME 8 BIT!
-        datawidth: 8 # same as word_bits
-        n_rdwr_ports: 2
-        n_banks: 4
-        block_size: 16
-        read_bandwidth: 16 # = n_rdwr_ports*datawidth
-        write_bandwidth: 16 # = n_rdwr_ports*datawidth
-        network_read: "D2A_NoC"
-        network_update: "A2D_NoC"
-
-    - !Component
-      name: D2A_NoC
-      class: SimpleMulticast         # timeloop class
-      subclass: DAC_SimpleMulticast  # accelergy class
-      attributes:
-        # MAKE ME 8 BIT and with Benini's pipelining!
-        datawidth: 16
-        DAC_datawidth: 1  # DAC only converts one bit per cycle
-        n_DAC_cycles: 16  # number of cycles needed for a DAC to convert a datawidth-bit data
-        n_PE_cols: 16
-        n_PE_rows: 16
-        action_name: "transfer"
-        per_datatype_ERT: True
-        multicast_factor_argument: "num_destinations"
-
-    - !Component
-      name: A2D_NoC
-      class: SimpleMulticast         # timeloop class
-      subclass: ADC_SimpleMulticast  # accelergy class
-      attributes:
-        # MAKE ME 8 BIT!
-        datawidth: 16
-        ADC_datawidth: 8
-        cell_datawidth: 2
-        # MAKE ME 8 BIT and with Benini's pipelining!
-        n_DAC_cycles: 16    # number of cycles needed for a DAC to convert a datawidth-bit data = datawidth/DAC_datawidth
-        n_PE_cols: 128
-        n_PE_rows: 128
-        action_name: "transfer"
-        per_datatype_ERT: True
-        multicast_factor_argument: "num_destinations"
-
-    - !Component
-      name: dummy_buffer
-      class: dummy_storage
-      attributes:
-        depth: 0   # will result in zero area/energy for accelergy
-        # MAKE ME 8 BIT!
-        width: 16  # timeloop needs a width even if the memory is not storing anything
-        datawidth: 8 # same as word_bits
-        network_fill: "D2A_NoC"
-        network_drain: "A2D_NoC"
-
-    - !Container
-      name: PERows
-      spatial: {meshY: 128}
-      #attributes:
-      #  network_fill: "D2A_NoC"
-      #  network_drain: "A2D_NoC"
-      constraints:
-        spatial:
-          factors: [L=1, E=1, 'D>=32']
-        temporal:
-          factors: [D=1, E=1]
-        dataspace:
-          keep: []
-          bypass: [Inputs, Outputs, Weights]
-
-    - !Container
-      name: PECols
-      spatial: {meshX: 128}
-      #attributes:
-      #  network_fill: "D2A_NoC"
-      #  network_drain: "A2D_NoC"
-      constraints:
-        spatial:
-          factors: [L=1, D=1, 'E>=32']
-        temporal:
-          factors: [D=1, E=1]
-        dataspace:
-          keep: []
-          bypass: [Inputs, Outputs, Weights]
-
-    - !Component
-      name: scratchpad
-      class: memcell_storage  # definitions of the compound classes can be found under "components" folder
-      attributes:
-        # MAKE ME 8 BIT!
-        width: 16       # width in bits
-        depth: 1
-        datawidth: 16     # IMC storage is 16 bits!
-        meshX: 128        # number of components in the X dimension (PE rows)
-        meshY: 128        # number of components in the Y dimension (PE cols)
+  - !Component
+    name: DRAM                 # offchip DRAM is the source of all datatypes
+    class: DRAM                # assume DRAM is large enough to store all the data, so no depth specification needed
+    attributes:
+      type: "LPDDR4"
+      width: 64                # width in bits
+      # MAKE ME 8 BIT!
+      datawidth: 16 # same as word_bits
+      block_size: 4
     
-    - !Component
-      name: mac
-      class: memcell_compute
-      attributes:
-        # MAKE ME 8 BIT!
-        datawidth: 16     # IMC computes at 16 bits!
-        meshX: 128        # number of components in the X dimension (PE rows)
-        meshY: 128        # number of components in the Y dimension (PE cols)
+  - !Container
+    name: chip                 # all components below this level are on-chip components
+
+  - !Component
+    name: shared_glb
+    class: SRAM # the smartbuffer caused issues with the stats.txt output
+    attributes:
+      entries: 262144 # number of 8-bit entries
+      depth: 16384 # rows
+      width: 128 # cols per row, you read one row (width-bits) at a time
+      instances: 1
+      # MAKE ME 8 BIT!
+      datawidth: 8 # same as word_bits
+      n_rdwr_ports: 2
+      n_banks: 4
+      block_size: 16
+      read_bandwidth: 16 # = n_rdwr_ports*datawidth
+      write_bandwidth: 16 # = n_rdwr_ports*datawidth
+      network_read: "D2A_NoC"
+      network_update: "A2D_NoC"
+
+  - !Component
+    name: D2A_NoC
+    class: SimpleMulticast         # timeloop class
+    subclass: DAC_SimpleMulticast  # accelergy class
+    attributes:
+      # MAKE ME 8 BIT and with Benini's pipelining!
+      datawidth: 16
+      DAC_datawidth: 1  # DAC only converts one bit per cycle
+      n_DAC_cycles: 16  # number of cycles needed for a DAC to convert a datawidth-bit data
+      n_PE_cols: 16
+      n_PE_rows: 16
+      action_name: "transfer"
+      per_datatype_ERT: True
+      multicast_factor_argument: "num_destinations"
+
+  - !Component
+    name: A2D_NoC
+    class: SimpleMulticast         # timeloop class
+    subclass: ADC_SimpleMulticast  # accelergy class
+    attributes:
+      # MAKE ME 8 BIT!
+      datawidth: 16
+      ADC_datawidth: 8
+      cell_datawidth: 2
+      # MAKE ME 8 BIT and with Benini's pipelining!
+      n_DAC_cycles: 16    # number of cycles needed for a DAC to convert a datawidth-bit data = datawidth/DAC_datawidth
+      n_PE_cols: 128
+      n_PE_rows: 128
+      action_name: "transfer"
+      per_datatype_ERT: True
+      multicast_factor_argument: "num_destinations"
+
+  - !Component
+    name: dummy_buffer
+    class: dummy_storage
+    attributes:
+      depth: 0   # will result in zero area/energy for accelergy
+      # MAKE ME 8 BIT!
+      width: 16  # timeloop needs a width even if the memory is not storing anything
+      datawidth: 8 # same as word_bits
+      network_fill: "D2A_NoC"
+      network_drain: "A2D_NoC"
+
+  - !Container
+    name: PERows
+    spatial: {meshY: 128}
+    #attributes:
+    #  network_fill: "D2A_NoC"
+    #  network_drain: "A2D_NoC"
+    constraints:
+      spatial:
+        factors: [L=1, E=1, 'D>=32']
+      temporal:
+        factors: [D=1, E=1]
+      dataspace:
+        keep: []
+        bypass: [Inputs, Outputs, Weights]
+
+  - !Container
+    name: PECols
+    spatial: {meshX: 128}
+    #attributes:
+    #  network_fill: "D2A_NoC"
+    #  network_drain: "A2D_NoC"
+    constraints:
+      spatial:
+        factors: [L=1, D=1, 'E>=32']
+      temporal:
+        factors: [D=1, E=1]
+      dataspace:
+        keep: []
+        bypass: [Inputs, Outputs, Weights]
+
+  - !Component
+    name: scratchpad
+    class: memcell_storage  # definitions of the compound classes can be found under "components" folder
+    attributes:
+      # MAKE ME 8 BIT!
+      width: 16       # width in bits
+      depth: 1
+      datawidth: 16     # IMC storage is 16 bits!
+      meshX: 128        # number of components in the X dimension (PE rows)
+      meshY: 128        # number of components in the Y dimension (PE cols)
+  
+  - !Component
+    name: mac
+    class: memcell_compute
+    attributes:
+      # MAKE ME 8 BIT!
+      datawidth: 16     # IMC computes at 16 bits!
+      meshX: 128        # number of components in the X dimension (PE rows)
+      meshY: 128        # number of components in the Y dimension (PE cols)

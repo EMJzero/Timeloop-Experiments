@@ -23,7 +23,8 @@ def parse_options():
         "help": if_match_and_remove("-h") or if_match_and_remove("--help"),
         "live": if_match_and_remove("-l") or if_match_and_remove("--live"),
         "no_e_fusion": if_match_and_remove("-nef") or if_match_and_remove("--no_e_fusion"),
-        "l_fusion": if_match_and_remove("-lf") or if_match_and_remove("--l_fusion")
+        "l_fusion": if_match_and_remove("-lf") or if_match_and_remove("--l_fusion"),
+        "pay_writeback_in_matmul": if_match_and_remove("-pwim") or if_match_and_remove("--pay_wb_in_mm")
     }
     return options
 
@@ -37,6 +38,8 @@ if options['help']:
     print("\t\t\t[Increases the latency with which column vectors are ready, due to DRAM accesses]")
     print("-lf, --l_fusion\t\tenforce L=1 when doing fusions (useful only on matmul layers).")
     print("\t\t\t[Stores the entirety of the output in the Accumulator, useful NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
+    print("-pwim, --pay_wb_in_mm\twhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
+    print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
     sys.exit(0)
 
 matmuls = ["KQV", "KTQ", "VScores", "Out", "FF1", "FF2"]
@@ -96,6 +99,7 @@ spec = tl.Specification.from_yaml_files(
 constrained_factors = ["D=1"]
 if not options['no_e_fusion']: constrained_factors.append("E=1")
 if options['l_fusion']: constrained_factors.append("L=1")
+constrained_factors = tl.constraints.Factors(constrained_factors)
 
 if spec.constraints['targets'] is None:
     spec.constraints['targets'] = tl.constraints.ConstraintsList()
@@ -107,11 +111,32 @@ if is_fusion:
             if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
                 found.append(target['target'])
                 target.factors = constrained_factors
-                print(f"Updating constraint: {dict(target.items())}")
+                print(f"Updating constraint (factors): {dict(target.items())}")
+            if (level_for_fusion >= 1 # fusing at Accumulator level
+            and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
+            and target.type == "temporal"):
+                target.factors = constrained_factors
+                print(f"Updating constraint (factors): {dict(target.items())}")
         for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
             spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'temporal', 'factors': constrained_factors}))
-            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+            print(f"Adding constraint (factors): {dict(spec.constraints['targets'][-1].items())}")
         found.clear()
+
+        if not options['pay_writeback_in_matmul']:
+            for target in spec.constraints['targets']:
+                if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "dataspace":
+                    found.append(target['target'])
+                    # The cost of writing back outputs in in the NOs!
+                    if "Outputs" not in target['bypass']:
+                        target.bypass.append("Outputs")
+                    if "Outputs" in target['keep']:
+                        target.keep.remove("Outputs")
+                    print(f"Updating constraint (bypasses): {dict(target.items())}")
+            for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
+                spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Outputs"], 'keep': ["Inputs", "Weights"]}))
+                print(f"Adding constraint (bypasses): {dict(spec.constraints['targets'][-1].items())}")
+            found.clear()
+
         # It is fine if outputs are written from the Accumulator to DRAM, as long as when there is
         # fusion full columns are available at the accumulator (enforce by forcing outer iterations
         # on E and D at 1). This is fine because during modelling of the NOs, when fusing at the
@@ -135,11 +160,11 @@ if is_fusion:
             if target['target'] in memory_levels[0:level_for_fusion+1] and target['target'] and target['type'] == "temporal":
                 found.append(target['target'])
                 target['permutation'] = tl.constraints.Permutation(['E', 'D', 'L'])
-                print(f"Updating constraint: {dict(target.items())}")
+                print(f"Updating constraint (permutation): {dict(target.items())}")
                 break
         for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion+1])):
             spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': memory_levels[level_for_fusion], 'type': 'temporal', 'permutation': ['E', 'D', 'L']}))
-            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+            print(f"Adding constraint (permutation): {dict(spec.constraints['targets'][-1].items())}")
     
     if is_norm_op:
         print("WARNING: copying just the bypasses, disregarding latency between two columns being ready. This means that only energy is a valid estimate.")
@@ -152,16 +177,21 @@ if is_fusion:
                     target.bypass.append("Inputs")
                 if "Inputs" in target['keep']:
                     target.keep.remove("Inputs")
-                print(f"Updating constraint: {dict(target.items())}")
+                if options['pay_writeback_in_matmul']:
+                    if "Outputs" not in target['bypass']:
+                        target.bypass.append("Outputs")
+                    if "Outputs" in target['keep']:
+                        target.keep.remove("Outputs")
+                print(f"Updating constraint (bypasses): {dict(target.items())}")
             if (level_for_fusion >= 1 # fusing at Accumulator level
                 and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
                 and target.type == "dataspace"):
                 target.bypass.append("Inputs")
                 target.keep.remove("Inputs")
-                print(f"Updating constraint: {dict(target.items())}")
+                print(f"Updating constraint (bypasses): {dict(target.items())}")
         for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
-            spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"]}))
-            print(f"Adding constraint: {dict(spec.constraints['targets'][-1].items())}")
+            spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"] if options['pay_writeback_in_matmul'] else ["Inputs", "Weights"]}))
+            print(f"Adding constraint (bypasses): {dict(spec.constraints['targets'][-1].items())}")
 
 if options['live']:
     spec.mapper.live_status = True

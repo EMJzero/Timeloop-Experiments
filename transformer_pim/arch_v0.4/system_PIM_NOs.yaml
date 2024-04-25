@@ -1,103 +1,133 @@
 architecture:
   version: 0.4
   nodes:
-    - !Container
-      name: system_arch              # name of the design
-      attributes:                    # shared attributes that will propagate down all lower levels
-        latency: "1ns"
+  - !Container
+    name: system_arch              # name of the design
+    attributes:                    # shared attributes that will propagate down all lower levels
+      latency: "1ns"
 
-    - !Component
-      name: DRAM                 # offchip DRAM is the source of all datatypes
-      class: DRAM                # assume DRAM is large enough to store all the data, so no depth specification needed
-      attributes:
-        width: 64                # width in bits
-        datawidth: 16            # datawidth in bits
-        block_size: 4
-      
-    - !Container
-      name: chip                 # all components below this level are on-chip components
-      
-    - !Component
-      name: shared_glb
-      class: SRAM # the smartbuffer caused issues with the stats.txt output
-      attributes:
-        entries: 262144 # number of 8-bit entries
-        depth: 16384 # rows
-        width: 128 # cols per row, you read one row (width-bits) at a time
-        instances: 1
-        datawidth: 8
-        n_rdwr_ports: 2
-        n_banks: 4
-        block_size: 16
-        read_bandwidth: 16 # = n_rdwr_ports*datawidth
-        write_bandwidth: 16 # = n_rdwr_ports*datawidth
+  - !Component
+    name: DRAM                 # offchip DRAM is the source of all datatypes
+    class: DRAM                # assume DRAM is large enough to store all the data, so no depth specification needed
+    attributes:
+      width: 64                # width in bits
+      datawidth: 16            # datawidth in bits
+      block_size: 4
     
-    #NOTE: consider removing this if you use IMC only as a compute element...
-    - !Component
-      name: IMC_as_buffer
-      class: memcell_storage
-      attributes:
-        entries: 32768 # number of 8-bit entries
-        depth: 16384 # rows
-        width: 16 # cols per row, you read one row (width-bits) at a time
-        instances: 1
-        datawidth: 8
-        n_rdwr_ports: 1
-        n_banks: 1
-        block_size: 2
-        read_bandwidth: 16 # = n_rdwr_ports*datawidth
-        write_bandwidth: 16 # = n_rdwr_ports*datawidth
+  - !Container
+    name: chip                 # all components below this level are on-chip components
+    
+  - !Component
+    name: shared_glb
+    class: SRAM # the smartbuffer caused issues with the stats.txt output
+    attributes:
+      entries: 262144 # number of 8-bit entries
+      depth: 16384 # rows
+      width: 128 # cols per row, you read one row (width-bits) at a time
+      instances: 1
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 4
+      block_size: 16
+      read_bandwidth: 16 # = n_rdwr_ports*datawidth
+      write_bandwidth: 16 # = n_rdwr_ports*datawidth
   
-    - !Container
-      name: PE
-      spatial: {meshY: 128}
-      # This is inspired by Gemmini's accumulator, which sits at the end of PE rows,
-      # working on produced cols. We assume thus a NOs module that works on cols of 128 elements.
-      # Critically, the size of the accumulator, which for us is fused with the global buffer,
-      # shall suffice in storing a full column...
-      constraints:
-        spatial:
-          factors: [L=1, D=1]
-        temporal:
-          factors: [D=1, E=1]
-        dataspace:
-          keep: []
-          bypass: [Inputs, Outputs, Weights]
-    
-    #- !Component
-    #  name: free_network
-    #  class: Legacy
-    #  attributes:
-    #    network_type: "1:1"
-    #    datawidth: 16
-    #    router_energy: 0
-    #    wire_energy: 0
-    #    energy_per_hop: 0
+  #NOTE: consider removing this if you use IMC only as a compute element...
+  - !Component
+    name: IMC_as_buffer
+    class: memcell_storage
+    attributes:
+      entries: 32768 # number of 8-bit entries
+      depth: 16384 # rows
+      width: 16 # cols per row, you read one row (width-bits) at a time
+      instances: 1
+      datawidth: 8
+      n_rdwr_ports: 1
+      n_banks: 1
+      block_size: 2
+      read_bandwidth: 16 # = n_rdwr_ports*datawidth
+      write_bandwidth: 16 # = n_rdwr_ports*datawidth
 
+  #- !Container
+  #  name: PE
+  #  spatial: {meshY: 128}
+    # This is inspired by Gemmini's accumulator, which sits at the end of PE rows,
+    # working on produced cols. We assume thus a NOs module that works on cols of 128 elements.
+    # Critically, the size of the accumulator, which for us is fused with the global buffer,
+    # shall suffice in storing a full column...
+  #  constraints:
+  #    spatial:
+  #      factors: [L=1, D=1]
+  #    temporal:
+  #      factors: [D=1, E=1]
+  #    dataspace:
+  #      keep: []
+  #      bypass: [Inputs, Outputs, Weights]
+  
+  #- !Component
+  #  name: free_network
+  #  class: Legacy
+  #  attributes:
+  #    network_type: "1:1"
+  #    datawidth: 16
+  #    router_energy: 0
+  #    wire_energy: 0
+  #    energy_per_hop: 0
+
+  - !Parallel
+    nodes:
     - !Component
-      name: registers
+      name: Registers
       class: SRAM
       attributes:
         vector_access_energy: 0 # fake weights have 0 cost
         addr_gen_energy: 0 # fake weights have 0 cost
         cluster_area: 0 # fake weights have 0 cost
-        width: 16       # width in bits
-        depth: 2
+        depth: 3 #64
+        width: 8
+        entries: 3 #64
         datawidth: 8
-        meshY: 128        # number of components in the X dimension (PE rows)
-        #network_read: free_network
-        #network_update: free_network
-   
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 128
+    
     - !Component
-      name: mac
-      class: free_compute
+      name: Registers_Outputs
+      class: SRAM
       attributes:
-        multiplier_width: 8
-        adder_width: 8
-        technology: "free"
-        #energy: 0 # add manually the operation cost of the NO module
-        #area: 0 # add manually the area cost of the NO module
-        datawidth: 16   # datawidth in bits
-        meshY: 128        # number of components in the X dimension (PE rows)
-        #network_operand: free_network
-        #network_result: free_network
+        vector_access_energy: 0 # fake weights have 0 cost
+        addr_gen_energy: 0 # fake weights have 0 cost
+        cluster_area: 0 # fake weights have 0 cost
+        depth: 1024 #4096
+        width: 8
+        entries: 1024 #4096
+        datawidth: 8
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 128
+
+    - !Component
+      name: Registers_Inputs
+      class: SRAM
+      attributes:
+        vector_access_energy: 0 # fake weights have 0 cost
+        addr_gen_energy: 0 # fake weights have 0 cost
+        cluster_area: 0 # fake weights have 0 cost
+        depth: 1024 #4096
+        width: 8
+        entries: 1024 #4096
+        datawidth: 8
+        n_rdwr_ports: 2
+        n_banks: 1
+        #meshY: 128
+
+  - !Component
+    name: MAC
+    class: free_compute
+    attributes:
+      technology: "free"
+      #energy: 0 # add manually the operation cost of the NO module
+      #area: 0
+      multiplier_width: 8 # was datawidth
+      adder_width: 8 # same as accumulator datawidth
+      #meshY: 128

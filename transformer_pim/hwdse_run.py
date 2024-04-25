@@ -100,6 +100,14 @@ if not options['no_e_fusion']: constrained_factors.append("E=1")
 if options['l_fusion']: constrained_factors.append("L=1")
 constrained_factors = tl.constraints.Factors(constrained_factors)
 
+spec.mapper.victory_condition = 1600
+
+print("NOT YET IMPLEMENTED...")
+sys.exit(1)
+
+print(dir(spec.mapper))
+sys.exit(0)
+
 if spec.constraints['targets'] is None:
     spec.constraints['targets'] = tl.constraints.ConstraintsList()
 if is_fusion:
