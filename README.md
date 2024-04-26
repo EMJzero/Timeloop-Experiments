@@ -29,7 +29,7 @@ The documentation, as of the time of writing, is anything but exhaustive, hencef
 
 ## Running The Experiments
 
-The two main active examples are **`transformer_pim`** and **`transformer_gemmini`**, all other ones could make use of the outdated Timeloop-v3 or not work entirely.
+The two main active examples are **`transformer_pim`** and **`transformer_gemmini`**, all other ones may make use of the outdated Timeloop-v3 or not work entirely.
 
 Before running any example, check out its `mapper.yaml` file, usually under the `mapper` folder. In there, you should set `num_threads` to the number of logical processors in your machine. Furthermore, consider also setting `victory_condition` to a few thousand attempts.
 

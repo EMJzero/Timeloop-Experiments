@@ -32,13 +32,13 @@ options = parse_options()
 
 if options['help']:
     print("Available options:")
-    print("-h, --help\t\tprint this help menu.")
-    print("-l, --live\t\tshow Timeloop's live status as it runs.")
-    print("-nef, --no_e_fusion\tdo not enforce E=1 when doing fusions (useful only on matmul layers).")
+    print("-h, --help\t\tPrint this help menu.")
+    print("-l, --live\t\tShow Timeloop's live status as it runs.")
+    print("-nef, --no_e_fusion\tDo not enforce E=1 when doing fusions (useful only on matmul layers).")
     print("\t\t\t[Increases the latency with which column vectors are ready, due to DRAM accesses]")
-    print("-lf, --l_fusion\t\tenforce L=1 when doing fusions (useful only on matmul layers).")
+    print("-lf, --l_fusion\t\tEnforce L=1 when doing fusions (useful only on matmul layers).")
     print("\t\t\t[Stores the entirety of the output in the Accumulator, useful NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
-    print("-pwim, --pay_wb_in_mm\twhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
+    print("-pwim, --pay_wb_in_mm\tWhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
     print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
     sys.exit(0)
 

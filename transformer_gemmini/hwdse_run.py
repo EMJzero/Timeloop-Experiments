@@ -72,33 +72,33 @@ if options['help']:
 hw_configs = [
     {
         # shared
-        'shared_glb_size': 262144,
+        'scratchpad_size': 262144*2,
+        'accumulator_size': 4096, # multiply by pe_rows in NOs mode
         # matmul only
         'pe_rows': 128,
         'pe_cols': 128,
         'dataflow': "WS",
         # normop only
-        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
         'rf_size': 1024
     }, {
         # shared
-        'shared_glb_size': 262144*4,
+        'scratchpad_size': 262144*2,
+        'accumulator_size': 4096*2, # multiply by pe_rows in NOs mode
         # matmul only
         'pe_rows': 128,
         'pe_cols': 128,
         'dataflow': "IS",
         # normop only
-        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
         'rf_size': 1024
     }, {
         # shared
-        'shared_glb_size': 262144*2,
+        'scratchpad_size': 262144*4,
+        'accumulator_size': 4096, # multiply by pe_rows in NOs mode
         # matmul only
         'pe_rows': 256,
         'pe_cols': 64,
-        'dataflow': "WS",
+        'dataflow': "OS",
         # normop only
-        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
         'rf_size': 1024
     }
 ]
@@ -179,11 +179,12 @@ desc_1 = [
 ]
 
 # MUST STAY ORDERED! Set D,E=1 for all those above the specified one!
-memory_levels = ["DRAM", "shared_glb", "scratchpad"]
+# No Scratchpad as it only stores inputs and outputs
+memory_levels = ["DRAM", "Accumulator", "Registers"]
 desc_memory_levels = [
     "DRAM, off-chip storage, fusing here is the same as doing nothing XD.",
-    "Global buffer, main on-chip SRAM storage, usual target for fusions.",
-    "Scratchpad simulating the IMC SRAM, fusion possible iif all weights can fit it at once."
+    "Accumulator, on-chip SRAM storage dedicated to PEs outputs, usual target for fusions.",
+    "Registers of the PEs, fusion possible iif all weights can fit them at once."
 ]
 
 def arg_error():
@@ -227,14 +228,15 @@ if not options['no_e_fusion']: constrained_factors.append("E=1")
 if options['l_fusion']: constrained_factors.append("L=1")
 constrained_factors = tl.constraints.Factors(constrained_factors)
 
-WS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1", "D>=32"])
-WS_row_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
-WS_col_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", "E>=32"])
-WS_col_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
-IS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", "E>=32"])
-IS_row_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
-IS_col_spatial_constr_factors = tl.constraints.Factors(["E=1", "D=1", "L>=32"])
-IS_col_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
+WS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
+WS_col_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1"])
+WS_rf_spatial_constr = tl.constraints.Factors(["D=1", "E=1"])
+IS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1"])
+IS_col_spatial_constr_factors = tl.constraints.Factors(["E=1", "D=1"])
+IS_rf_spatial_constr = tl.constraints.Factors(["E=1", "L=1"])
+OS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
+OS_col_spatial_constr_factors = tl.constraints.Factors(["E=1", "D=1"])
+OS_rf_spatial_constr = tl.constraints.Factors(["D=1", "L=1"])
 
 
 idx = 0
@@ -249,11 +251,11 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         is_norm_op = layer in normops
 
         # Define relative paths
-        ARCH_PATH = f"{os.curdir}/arch_v0.4/system_PIM{'_NOs' if is_norm_op else ''}.yaml"
-        COMPONENTS_PATH = f"{os.curdir}/arch_v0.4/components/*.yaml"
+        ARCH_PATH = f"{os.curdir}/arch/system_gemmini{'_NOs' if is_norm_op else ''}.yaml"
+        COMPONENTS_PATH = f"{os.curdir}/arch/components/*.yaml"
         PROBLEM_PATH = f"{os.curdir}/layers/{layer}_layer.yaml"
         MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
-        CONSTRAINTS_PATH = f"{os.curdir}/constraints_v0.4/constraints{'_NOs' if is_norm_op else ''}.yaml"
+        CONSTRAINTS_PATH = f"{os.curdir}/constraints/constraints{'_NOs' if is_norm_op else ''}.yaml"
         VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
         print(f"Sources:\n- {ARCH_PATH}\n- {COMPONENTS_PATH}\n- {MAPPER_PATH}\n- {PROBLEM_PATH}\n- {CONSTRAINTS_PATH}\n- {VARIABLES_PATH}\n")
 
@@ -273,25 +275,30 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         spec.mapspace.template = 'uber' #'ruby'
 
         # Setup the architecture
-        buf = spec.architecture.find("shared_glb")
-        buf.attributes["entries"] = hw_config['shared_glb_size']
-        buf.attributes["depth"] = hw_config['shared_glb_size'] // (buf.attributes["width"] // buf.attributes["datawidth"])
+        buf = spec.architecture.find("Scratchpad")
+        buf.attributes["entries"] = hw_config['scratchpad_size']
+        buf.attributes["depth"] = hw_config['scratchpad_size'] // (buf.attributes["width"] // buf.attributes["datawidth"])
+        acc = spec.architecture.find("Accumulator")
+        acc.attributes["entries"] = hw_config['accumulator_size'] * (1 if not is_norm_op else hw_config['pe_rows'])
+        acc.attributes["depth"] = acc.attributes["entries"] // (acc.attributes["width"] // acc.attributes["datawidth"])
         if not is_norm_op:
             pe_rows = spec.architecture.find("PERows")
             pe_rows.spatial.meshY = hw_config['pe_rows']
             pe_cols = spec.architecture.find("PECols")
             pe_cols.spatial.meshX = hw_config['pe_cols']
-            sp = spec.architecture.find("scratchpad")
+            acc.attributes["meshY"] = hw_config['pe_rows']
+            sp = spec.architecture.find("Registers")
             sp.attributes["meshY"] = hw_config['pe_rows']
             sp.attributes["meshX"] = hw_config['pe_cols']
-            mac = spec.architecture.find("mac")
+            mac = spec.architecture.find("MAC")
             mac.attributes["meshY"] = hw_config['pe_rows']
             mac.attributes["meshX"] = hw_config['pe_cols']
             if hw_config['dataflow'] == "IS":
                 pe_rows.constraints.spatial.factors = IS_row_spatial_constr_factors
-                pe_rows.constraints.temporal.factors = IS_row_temporal_constr_factors
                 pe_cols.constraints.spatial.factors = IS_col_spatial_constr_factors
-                pe_cols.constraints.temporal.factors = IS_col_temporal_constr_factors
+            elif hw_config['dataflow'] == "OS":
+                pe_rows.constraints.spatial.factors = OS_row_spatial_constr_factors
+                pe_cols.constraints.spatial.factors = OS_col_spatial_constr_factors
             elif hw_config['dataflow'] != "WS":
                 print(f"Invalid dataflow name: {hw_config['dataflow']}")
                 sys.exit(1)
@@ -302,8 +309,6 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
             out_reg = spec.architecture.find("Registers_Inputs")
             out_reg.attributes["depth"] = hw_config['rf_size']
             out_reg.attributes["entries"] = hw_config['rf_size']
-            if hw_config['use_IMC_as_buffer']:
-                print("WARNING: \"use_IMC_as_buffer\" has not yet been implemented!")
 
         if spec.constraints['targets'] is None:
             spec.constraints['targets'] = tl.constraints.ConstraintsList()
@@ -312,8 +317,13 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                 # Apply fusion constraints
                 found = []
                 for target in spec.constraints['targets']:
-                    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target.type == "temporal":
+                    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "temporal":
                         found.append(target['target'])
+                        target.factors = constrained_factors
+                        print(f"Updating constraint (factors): {dict(target.items())}")
+                    if (level_for_fusion >= 1 # fusing at Accumulator level
+                    and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
+                    and target.type == "temporal"):
                         target.factors = constrained_factors
                         print(f"Updating constraint (factors): {dict(target.items())}")
                 for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
@@ -323,7 +333,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
 
                 if not options['pay_writeback_in_matmul']:
                     for target in spec.constraints['targets']:
-                        if target['target'] in memory_levels[0:level_for_fusion] and target['target'] and target['type'] == "dataspace":
+                        if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "dataspace":
                             found.append(target['target'])
                             # The cost of writing back outputs in in the NOs!
                             if "Outputs" not in target['bypass']:
@@ -335,8 +345,8 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                         spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Outputs"], 'keep': ["Inputs", "Weights"]}))
                         print(f"Adding constraint (bypasses): {dict(spec.constraints['targets'][-1].items())}")
                     found.clear()
-            
-                # THE LEVEL AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
+                
+                # THE LEVEL(s) AT WHICH YOU FUSE MUST HAVE LOOPS (inner)EDL(outer)
                 for target in spec.constraints['targets']:
                     if target['target'] in memory_levels[0:level_for_fusion+1] and target['target'] and target['type'] == "temporal":
                         found.append(target['target'])
@@ -352,7 +362,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                 # Apply the fusion to the NO
                 found = []
                 for target in spec.constraints['targets']:
-                    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target.type == "dataspace":
+                    if target['target'] in memory_levels[0:level_for_fusion] and target['target'] not in found and target['type'] == "dataspace":
                         found.append(target['target'])
                         if "Inputs" not in target['bypass']:
                             target.bypass.append("Inputs")
@@ -363,6 +373,12 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                                 target.bypass.append("Outputs")
                             if "Outputs" in target['keep']:
                                 target.keep.remove("Outputs")
+                        print(f"Updating constraint (bypasses): {dict(target.items())}")
+                    if (level_for_fusion >= 1 # fusing at Accumulator level
+                        and target['target'] == 'Scratchpad' # then remove inputs from the Scratchpad, as the Accumulator is lower down
+                        and target.type == "dataspace"):
+                        target.bypass.append("Inputs")
+                        target.keep.remove("Inputs")
                         print(f"Updating constraint (bypasses): {dict(target.items())}")
                 for target in list(filter(lambda x : x not in found, memory_levels[0:level_for_fusion])):
                     spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"] if options['pay_writeback_in_matmul'] else ["Inputs", "Weights"]}))
