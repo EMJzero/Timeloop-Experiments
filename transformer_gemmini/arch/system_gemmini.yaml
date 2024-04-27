@@ -35,8 +35,8 @@ architecture:
       datawidth: 8
       n_rdwr_ports: 2
       n_banks: 4
-      read_bandwidth: 16 # = n_rdwr_ports*datawidth
-      write_bandwidth: 16 # = n_rdwr_ports*datawidth
+      read_bandwidth: 16 # byte/cycle
+      write_bandwidth: 16 # byte/cycle
       network_fill_latency: 1
       network_drain_latency: 1
   
@@ -59,8 +59,8 @@ architecture:
       network_word_bits: 16
       n_rdwr_ports: 2
       n_banks: 2
-      read_bandwidth: 64 # = n_rdwr_ports*datawidth
-      write_bandwidth: 64 # = n_rdwr_ports*datawidth
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
       #instances: 16 # was 16
       meshY: 16 # was instances
       network_fill_latency: 1

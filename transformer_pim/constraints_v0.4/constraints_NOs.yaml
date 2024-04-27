@@ -30,8 +30,8 @@ constraints:
       type: temporal
       permutation: [E, D, L]
       maximize_dims: [[E], [L]]
-      # the first parenthesis is the number of entries in the Accumulator (shared between inputs and outputs), the
-      # second parenthesis is the size of the registers at the PE level, see "E" factor below (line 79) !
+      # the first parenthesis is the number of entries in the Accumulator (shared between inputs and outputs -> the *2),
+      # the second parenthesis is the size of the registers at the PE level, see "E" factor below (line 79) !
       maximize_dims_capacity: (16384*4*4) // (1024*2)
     # =======================================
     # Global Buffer Constraints

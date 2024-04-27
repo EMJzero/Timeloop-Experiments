@@ -49,13 +49,16 @@ def parse_options():
         "no_e_fusion": if_match_and_remove("-nef") or if_match_and_remove("--no_e_fusion"),
         "l_fusion": if_match_and_remove("-lf") or if_match_and_remove("--l_fusion"),
         "pay_writeback_in_matmul": if_match_and_remove("-pwim") or if_match_and_remove("--pay_wb_in_mm"),
-        "mixup": if_match_and_remove("-mx") or if_match_and_remove("--mixup")
+        "mixup": if_match_and_remove("-mx") or if_match_and_remove("--mixup"),
+        "victory_condition": if_match_and_remove("-vc", True) or if_match_and_remove("--vict_cond", True),
+        "summary_only": if_match_and_remove("-so") or if_match_and_remove("--summary_only")
     }
     return options
 
 print(f"Arguments provided: {sys.argv}")
 options = parse_options()
 
+# Print the help menu and quit
 if options['help']:
     print("Available options:")
     print("-h, --help\t\tPrint this help menu.")
@@ -67,38 +70,85 @@ if options['help']:
     print("-pwim, --pay_wb_in_mm\tWhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
     print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
     print("-mx, --mixup\t\tInstead of trying only hardcoded hardware configurations, also try any permutation/mixup of them.")
+    print("-vc, --vict_cond <num>\tUses <num> to specify the number of sub-optimal mappings to encounter before terminating a thread,\n\t\t\tthat is, the victory condition. Default is 160, set to around 4000 to guarantee optimal mappings.")
+    print("-so, --summary_only\tDoes not run the HWDSE, instead prints the results from a previously run (from the '/outputs_hwdse' folder).")
     sys.exit(0)
 
 hw_configs = [
+    # 3 designs varying in SA rows/cols
     {
         # shared
         'shared_glb_size': 262144,
+        'shared_glb_bandwidth': 16,
         # matmul only
         'pe_rows': 128,
         'pe_cols': 128,
         'dataflow': "WS",
         # normop only
         'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
         'rf_size': 1024
     }, {
         # shared
-        'shared_glb_size': 262144*4,
+        'shared_glb_size': 262144,
+        'shared_glb_bandwidth': 16,
         # matmul only
-        'pe_rows': 128,
-        'pe_cols': 128,
-        'dataflow': "IS",
+        'pe_rows': 64,
+        'pe_cols': 256,
+        'dataflow': "WS", #IS
         # normop only
         'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
         'rf_size': 1024
     }, {
         # shared
-        'shared_glb_size': 262144*2,
+        'shared_glb_size': 262144,
+        'shared_glb_bandwidth': 16,
         # matmul only
         'pe_rows': 256,
         'pe_cols': 64,
         'dataflow': "WS",
         # normop only
         'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
+        'rf_size': 1024
+    },
+    # same 3 designs as above, with double on-chip memory and bandwidth
+    {
+        # shared
+        'shared_glb_size': 262144*2,
+        'shared_glb_bandwidth': 16*2,
+        # matmul only
+        'pe_rows': 128,
+        'pe_cols': 128,
+        'dataflow': "WS",
+        # normop only
+        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
+        'rf_size': 1024
+    }, {
+        # shared
+        'shared_glb_size': 262144*2,
+        'shared_glb_bandwidth': 16*2,
+        # matmul only
+        'pe_rows': 64,
+        'pe_cols': 256,
+        'dataflow': "WS", #IS
+        # normop only
+        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
+        'rf_size': 1024
+    }, {
+        # shared
+        'shared_glb_size': 262144*2,
+        'shared_glb_bandwidth': 16*2,
+        # matmul only
+        'pe_rows': 256,
+        'pe_cols': 64,
+        'dataflow': "WS",
+        # normop only
+        'use_IMC_as_buffer': False, # infer IMC buffer size from pe cols/rows
+        'IMC_buffer_bandwidth': 16,
         'rf_size': 1024
     }
 ]
@@ -164,6 +214,36 @@ def recover_metrics(path):
             result["utilization"] = utilization
     return result
 
+def best_by_metric(results, metric, lower_is_better = True):
+    best = math.inf if lower_is_better else 0
+    configs = []
+    for res in results:
+        if (res['metrics'][metric] < best and lower_is_better) or (res['metrics'][metric] > best and not lower_is_better):
+            best = res['metrics'][metric]
+            configs = [res]
+        elif res['metrics'][metric] == best:
+            configs.append(res)
+    return configs
+
+def summary(results, msg = "RESULTS SUMMARY:", print_tested = False):
+    print(f"\n\n{msg}\n")
+    if print_tested:
+        print("\n------> Tested configurations:\n" + "\n---\n".join(map(pretty_format_dict, results)))
+        print("\n")
+    print("\n---> Best by ENERGY used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "energy"))))
+    print("\n---> Best by CYCLES used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "cycles"))))
+    print("\n---> Best by UTILIZATION used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "utilization", False))))
+
+# Summary only, print it and quit
+if options['summary_only']:
+    for root, dirs, files in os.walk("./outputs_hwdse"):
+        if "hw_config.json" in files:
+            with open(os.path.join(root, "hw_config.json"), "r") as file:
+                results.append(json.load(file))
+    summary(results, print_tested = True)
+    sys.exit(0)
+
+
 matmuls = ["KQV", "KTQ", "VScores", "Out", "FF1", "FF2"]
 normops = ["softmax", "layernorm"]
 fusable = normops + ["KTQ", "Out"]
@@ -221,20 +301,10 @@ print("Target operations:", target_ops)
 print("Fusion set to:", is_fusion)
 if is_fusion: print("Fusion enabled for level:", memory_levels[level_for_fusion])
 
-
 constrained_factors = ["D=1"]
 if not options['no_e_fusion']: constrained_factors.append("E=1")
 if options['l_fusion']: constrained_factors.append("L=1")
 constrained_factors = tl.constraints.Factors(constrained_factors)
-
-WS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1", "D>=32"])
-WS_row_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
-WS_col_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", "E>=32"])
-WS_col_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
-IS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", "E>=32"])
-IS_row_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
-IS_col_spatial_constr_factors = tl.constraints.Factors(["E=1", "D=1", "L>=32"])
-IS_col_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
 
 
 idx = 0
@@ -244,7 +314,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
     print(pretty_format_dict(hw_config), end = "\n")
 
     for layer in target_ops:
-        print(f"\n----> Working on layer: {layer}\n")
+        print(f"\n----> Config {idx}, working on layer: {layer}\n")
 
         is_norm_op = layer in normops
 
@@ -267,15 +337,26 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         )
 
         # Setup the mapper
-        spec.mapper.victory_condition = 160#0
+        spec.mapper.victory_condition = options['victory_condition'] if options['victory_condition'] else 160
         if options['live']:
             spec.mapper.live_status = True
         spec.mapspace.template = 'uber' #'ruby'
 
         # Setup the architecture
+        WS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1", f"D>={hw_config['pe_rows']//2}"])
+        WS_row_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
+        WS_col_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", f"E>={hw_config['pe_cols']//2}"])
+        WS_col_temporal_constr_factors = tl.constraints.Factors(["D=1", "E=1"])
+        IS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "D=1", f"E>={hw_config['pe_rows']//2}"])
+        IS_row_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
+        IS_col_spatial_constr_factors = tl.constraints.Factors(["E=1", "D=1", f"L>={hw_config['pe_cols']//2}"])
+        IS_col_temporal_constr_factors = tl.constraints.Factors(["L=1", "E=1"])
+
         buf = spec.architecture.find("shared_glb")
         buf.attributes["entries"] = hw_config['shared_glb_size']
         buf.attributes["depth"] = hw_config['shared_glb_size'] // (buf.attributes["width"] // buf.attributes["datawidth"])
+        buf.attributes["read_bandwidth"] = hw_config['shared_glb_bandwidth']
+        buf.attributes["write_bandwidth"] = hw_config['shared_glb_bandwidth']
         if not is_norm_op:
             pe_rows = spec.architecture.find("PERows")
             pe_rows.spatial.meshY = hw_config['pe_rows']
@@ -292,8 +373,12 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                 pe_rows.constraints.temporal.factors = IS_row_temporal_constr_factors
                 pe_cols.constraints.spatial.factors = IS_col_spatial_constr_factors
                 pe_cols.constraints.temporal.factors = IS_col_temporal_constr_factors
+                for constr in spec.constraints['targets']:
+                    if constr['target'] == "scratchpad" and constr['type'] == "dataspace":
+                        constr['keep'] = ["Inputs"]
+                        constr['bypass'] = ["Weights", "Outputs"]
             elif hw_config['dataflow'] != "WS":
-                print(f"Invalid dataflow name: {hw_config['dataflow']}")
+                print(f"------------> ERROR!! Invalid dataflow name: {hw_config['dataflow']}")
                 sys.exit(1)
         else:
             in_reg = spec.architecture.find("Registers_Outputs")
@@ -302,6 +387,15 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
             out_reg = spec.architecture.find("Registers_Inputs")
             out_reg.attributes["depth"] = hw_config['rf_size']
             out_reg.attributes["entries"] = hw_config['rf_size']
+            IMC_buf = spec.architecture.find("IMC_as_buffer")
+            IMC_buf.attributes["read_bandwidth"] = hw_config['IMC_buffer_bandwidth']
+            IMC_buf.attributes["write_bandwidth"] = hw_config['IMC_buffer_bandwidth']
+            for constr in spec.constraints['targets']:
+                # Fix maximize_dims
+                if constr['target'] == "shared_glb" and 'maximize_dims_capacity' in constr:
+                    constr['maximize_dims_capacity'] = buf.attributes["entries"] // (hw_config['rf_size']*2)
+                if constr['target'] == "Registers_Inputs" and constr['type'] == "temporal":
+                    constr['factors'] = tl.constraints.Factors([f"E={hw_config['rf_size']}", "L=1"])
             if hw_config['use_IMC_as_buffer']:
                 print("WARNING: \"use_IMC_as_buffer\" has not yet been implemented!")
 
@@ -374,7 +468,16 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Fusion optimized: {is_fusion}\nFusion constraints: {constrained_factors}")
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Hardware Configuration: {pretty_format_dict(hw_config)}")
-        metrics = recover_metrics(output_dir)
+        try:
+            metrics = recover_metrics(output_dir)
+        except:
+            print(f"\n\n------------> ERROR!! Mapping failed for layer ->{layer}<- on config:\n{pretty_format_dict(hw_config)}")
+            print("Assuming metrics = +inf or 0 depending on the case...\n")
+            metrics = {
+                'energy': math.inf,
+                'cycles': math.inf,
+                'utilization': 0
+            }
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Relevant Metrics: {pretty_format_dict(metrics)}")
 
         if 'metrics' not in hw_config:
@@ -383,6 +486,9 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
             for k in metrics.keys():
                 hw_config['metrics'][k] += metrics[k]
 
+    hw_config['metrics']['utilization'] /= len(target_ops)
+
+    output_dir = f"{os.curdir}/outputs_hwdse/{idx}"
     with open(f"{output_dir}/hw_config.json", 'w') as file:
         file.write(json.dumps(hw_config, indent = 1))
     
@@ -399,7 +505,4 @@ def best_by_metric(results, metric, lower_is_better = True):
             configs.append(res)
     return configs
 
-print("\n\nExploration terminated! Searching for best configuration...\n")
-print("\nBest by ENERGY used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "energy"))))
-print("\nBest by CYCLES used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "cycles"))))
-print("\nBest by UTILIZATION used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "utilization", False))))
+summary(results, "Exploration terminated! Searching for best configuration...")

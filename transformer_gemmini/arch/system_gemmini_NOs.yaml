@@ -37,8 +37,8 @@ architecture:
       datawidth: 8
       n_rdwr_ports: 2
       n_banks: 4
-      read_bandwidth: 16 # = n_rdwr_ports*datawidth
-      write_bandwidth: 16 # = n_rdwr_ports*datawidth
+      read_bandwidth: 16 # byte/cycle
+      write_bandwidth: 16 # byte/cycle
   
   #- !Container
   #  name: PERows
@@ -60,8 +60,8 @@ architecture:
       n_rdwr_ports: 32 #2
       n_banks: 32 #2
       #meshY: 16
-      read_bandwidth: 64 # = n_rdwr_ports*datawidth
-      write_bandwidth: 64 # = n_rdwr_ports*datawidth
+      read_bandwidth: 4*16 # byte/cycle
+      write_bandwidth: 4*16 # byte/cycle
 
   - !Parallel
     nodes:

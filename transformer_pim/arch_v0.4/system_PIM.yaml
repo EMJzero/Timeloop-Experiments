@@ -32,8 +32,8 @@ architecture:
       n_rdwr_ports: 2
       n_banks: 4
       block_size: 16
-      read_bandwidth: 16 # = n_rdwr_ports*datawidth
-      write_bandwidth: 16 # = n_rdwr_ports*datawidth
+      read_bandwidth: 16 # byte/cycle
+      write_bandwidth: 16 # byte/cycle
       network_read: "D2A_NoC"
       network_update: "A2D_NoC"
 
