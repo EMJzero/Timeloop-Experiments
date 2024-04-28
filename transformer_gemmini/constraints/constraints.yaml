@@ -80,3 +80,14 @@ constraints:
     #- target: Registers
     #  type: temporal
     #  factors: [D=1, L=1]
+
+    #- target: Registers
+    #  type: skew
+    #  modulo: 16
+    #  terms:
+    #    - variable:
+    #      - dimension: E
+    #      - type: spatial
+    #    - variable:
+    #      - dimension: D
+    #      - type: spatial

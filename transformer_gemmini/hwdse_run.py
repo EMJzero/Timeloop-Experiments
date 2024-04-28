@@ -3,10 +3,12 @@ import itertools
 import signal
 import code
 import math
-import time
-import json
 import sys
 import os
+
+from prettytable import PrettyTable
+import json
+import time
 import re
 
 # L = inputs cols
@@ -51,7 +53,9 @@ def parse_options():
         "pay_writeback_in_matmul": if_match_and_remove("-pwim") or if_match_and_remove("--pay_wb_in_mm"),
         "mixup": if_match_and_remove("-mx") or if_match_and_remove("--mixup"),
         "victory_condition": if_match_and_remove("-vc", True) or if_match_and_remove("--vict_cond", True),
-        "summary_only": if_match_and_remove("-so") or if_match_and_remove("--summary_only")
+        "summary_only": if_match_and_remove("-so") or if_match_and_remove("--summary_only"),
+        "table": if_match_and_remove("-t") or if_match_and_remove("--table"),
+        "initial_idx": if_match_and_remove("-i", True) or if_match_and_remove("--init_idx")
     }
     return options
 
@@ -72,6 +76,8 @@ if options['help']:
     print("-mx, --mixup\t\tInstead of trying only hardcoded hardware configurations, also try any permutation/mixup of them.")
     print("-vc, --vict_cond <num>\tUses <num> to specify the number of sub-optimal mappings to encounter before terminating a thread,\n\t\t\tthat is, the victory condition. Default is 160, set to around 4000 to guarantee optimal mappings.")
     print("-so, --summary_only\tDoes not run the HWDSE, instead prints the results from a previously run (from the '/outputs_hwdse' folder).")
+    print("-t, --table\t\tPrints a pretty-table of the summary after its textual form.")
+    print("-i, --init_idx <idx>\tSets to <idx> the index of the first tried configuration, continuing from there.")
     sys.exit(0)
 
 
@@ -234,6 +240,19 @@ def summary(results, msg = "RESULTS SUMMARY:", print_tested = False):
     print("\n---> Best by ENERGY used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "energy"))))
     print("\n---> Best by CYCLES used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "cycles"))))
     print("\n---> Best by UTILIZATION used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "utilization", False))))
+    if options['table']:
+        print("\n\nSUMMARY TABLE:")
+        references = {k : results[0][k] for k in hw_configs[0].keys() if k != 'metrics'}
+        keep = []
+        metrics = [k for k in results[0]['metrics'].keys()]
+        for res in results[1:]:
+            for k in [k for k in references.keys() if k not in keep]:
+                if res[k] != references[k]:
+                    keep.append(k)
+        table = PrettyTable(keep + metrics)
+        for res in results:
+            table.add_row([res[k] for k in keep] + [(res['metrics'][k] if isinstance(res['metrics'][k], int) else "{:.3f}".format(res['metrics'][k])) for k in metrics])
+        print(table)
 
 # Summary only, print it and quit
 if options['summary_only']:
@@ -309,7 +328,7 @@ if options['l_fusion']: constrained_factors.append("L=1")
 constrained_factors = tl.constraints.Factors(constrained_factors)
 
 
-idx = 0
+idx = int(options['initial_idx']) if options['initial_idx'] else 0
 for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs)):
     idx += 1
     print(f"\n--------> Working on config: {idx}")
@@ -382,15 +401,19 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                 pe_cols.constraints.spatial.factors = IS_col_spatial_constr_factors
                 for constr in spec.constraints['targets']:
                     if constr['target'] == "Registers" and constr['type'] == "dataspace":
-                        constr['keep'] = ["Inputs"]
-                        constr['bypass'] = ["Weights", "Outputs"]
+                        constr['keep'].clear()
+                        constr['keep'].append("Inputs")
+                        constr['bypass'].clear()
+                        constr['bypass'] += ["Weights", "Outputs"]
             elif hw_config['dataflow'] == "OS":
                 pe_rows.constraints.spatial.factors = OS_row_spatial_constr_factors
                 pe_cols.constraints.spatial.factors = OS_col_spatial_constr_factors
                 for constr in spec.constraints['targets']:
                     if constr['target'] == "Registers" and constr['type'] == "dataspace":
-                        constr['keep'] = ["Outputs"]
-                        constr['bypass'] = ["Weights", "Inputs"]
+                        constr['keep'].clear()
+                        constr['keep'].append("Outputs")
+                        constr['bypass'].clear()
+                        constr['bypass'] += ["Weights", "Inputs"]
             elif hw_config['dataflow'] != "WS":
                 print(f"------------> ERROR!! Invalid dataflow name: {hw_config['dataflow']}")
                 sys.exit(1)
