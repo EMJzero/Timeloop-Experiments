@@ -1,7 +1,7 @@
-technology,cellwidth,action,power(W),global_cycle_seconds,action_latency_cycles,n_instances,energy,area,comment
-memristor,2,read,0.00E+00,1.2e-09,1,1,0.0066E+00,0,"energy in pJ;  area in mm^2, power"
-memristor,2,write,0.00E+00,1.2e-09,1,1,0.0033E+00,0,
-memristor,2,idle,0.00E+00,1.2e-09,1,1,0.00E+00,0,
-memristor,1,read,0.00E+00,1.2e-09,1,1,0.0033E+00,0,
-memristor,1,write,0.00E+00,1.2e-09,1,1,0.00165E+00,0,
-memristor,1,idle,0.00E+00,1.2e-09,1,1,0.00E+00,0,
+technology,cellwidth,action,power(W),global_cycle_seconds,cycle_seconds,action_latency_cycles,n_instances,energy,area,comment
+memristor,2,read,0.00E+00,1.2e-09,1.2e-09,1,1,0.0066E+00,0,"energy in pJ;  area in mm^2, power"
+memristor,2,write,0.00E+00,1.2e-09,1.2e-09,1,1,0.0033E+00,0,
+memristor,2,idle,0.00E+00,1.2e-09,1.2e-09,1,1,0.00E+00,0,
+memristor,1,read,0.00E+00,1.2e-09,1.2e-09,1,1,0.0033E+00,0,
+memristor,1,write,0.00E+00,1.2e-09,1.2e-09,1,1,0.00165E+00,0,
+memristor,1,idle,0.00E+00,1.2e-09,1.2e-09,1,1,0.00E+00,0,

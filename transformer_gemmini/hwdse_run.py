@@ -81,6 +81,22 @@ if options['help']:
     sys.exit(0)
 
 
+### PARAMETERS DESCRIPTION:
+# shared -> used both during matmuls and NOs
+#'scratchpad_size': size of the on-chip SRAM buffer
+#'accumulator_size': size of the SRAM buffers at the end of each row
+# --> the two above are measured in number-of-values-stored (hence, bytes since here data is in 8bits)
+#'scratchpad_bandwidth': read and write network bandwidth for the scratchpad
+#'accumulator_bandwidth': read and write network bandwidth for the accumulators
+# --> the two above are measured in in words-per-cycle
+## matmul only
+#'pe_rows': rows of the spatial architecture
+#'pe_cols': cols of the spatial architecture
+#'dataflow': dataflow for the spatial architecture, one of "WS", "IS" or "OS"
+## normop only
+#'rf_size': size of a column vector processed during NOs
+# --> the above is measured in number-of-values-stored (hence, bytes since here data is in 8bits)
+
 hw_configs = [
     # 3 designs varying in SA rows/cols
     {
@@ -191,7 +207,7 @@ def append_to_file(path, text_to_append):
     with open(path, 'a') as file:
         file.write('\n\n' + text_to_append)
 
-def recover_metrics(path):
+def recover_metrics(path, coefficient = 1):
     result = {}
     with open(os.path.join(path, "timeloop-mapper.stats.txt"), "r") as file:
         content = file.read()
@@ -210,7 +226,7 @@ def recover_metrics(path):
                 factor = 10**0
             elif energy_unit == "fJ":
                 factor = 10**-3
-            result["energy"] = energy_value * factor
+            result["energy"] = energy_value * factor * coefficient
         match = re.search(r"Cycles: (\d+)", content)
         if match:
             cycles = int(match.group(1))
@@ -267,6 +283,7 @@ if options['summary_only']:
 matmuls = ["KQV", "KTQ", "VScores", "Out", "FF1", "FF2"]
 normops = ["softmax", "layernorm"]
 fusable = normops + ["KTQ", "Out"]
+multihead = ["KTQ", "VScores", "softmax"]
 
 valid_args_1 = matmuls + normops
 desc_1 = [
@@ -512,7 +529,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Fusion optimized: {is_fusion}\nFusion constraints: {constrained_factors}")
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Hardware Configuration: {pretty_format_dict(hw_config)}")
         try:
-            metrics = recover_metrics(output_dir)
+            metrics = recover_metrics(output_dir, spec.variables['HEADS'] if layer in multihead else 1)
         except:
             print(f"\n\n------------> ERROR!! Mapping failed for layer ->{layer}<- on config:\n{pretty_format_dict(hw_config)}")
             print("Assuming metrics = +inf or 0 depending on the case...\n")
