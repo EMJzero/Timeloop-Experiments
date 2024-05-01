@@ -55,7 +55,8 @@ def parse_options():
         "victory_condition": if_match_and_remove("-vc", True) or if_match_and_remove("--vict_cond", True),
         "summary_only": if_match_and_remove("-so") or if_match_and_remove("--summary_only"),
         "table": if_match_and_remove("-t") or if_match_and_remove("--table"),
-        "initial_idx": if_match_and_remove("-i", True) or if_match_and_remove("--init_idx")
+        "initial_idx": if_match_and_remove("-i", True) or if_match_and_remove("--init_idx"),
+        "ignore_heads": if_match_and_remove("-ih") or if_match_and_remove("--ignore_heads")
     }
     return options
 
@@ -70,7 +71,7 @@ if options['help']:
     print("-nef, --no_e_fusion\tDo not enforce E=1 when doing fusions (useful only on matmul layers).")
     print("\t\t\t[Increases the latency with which column vectors are ready, due to DRAM accesses]")
     print("-lf, --l_fusion\t\tEnforce L=1 when doing fusions (useful only on matmul layers).")
-    print("\t\t\t[Stores the entirety of the output in the Accumulator, useful NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
+    print("\t\t\t[Stores the entirety of the output in the Accumulator, useful if NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
     print("-pwim, --pay_wb_in_mm\tWhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
     print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
     print("-mx, --mixup\t\tInstead of trying only hardcoded hardware configurations, also try any permutation/mixup of them.")
@@ -78,6 +79,7 @@ if options['help']:
     print("-so, --summary_only\tDoes not run the HWDSE, instead prints the results from a previously run (from the '/outputs_hwdse' folder).")
     print("-t, --table\t\tPrints a pretty-table of the summary after its textual form.")
     print("-i, --init_idx <idx>\tSets to <idx> the index of the first tried configuration, continuing from there.")
+    print("-ih, --ignore_heads\tIgnores the fact that some layers are repeated once per head, considering them one time only.")
     sys.exit(0)
 
 
@@ -231,12 +233,13 @@ def recover_metrics(path, coefficient = 1):
             result["energy"] = energy_value * factor * coefficient
         match = re.search(r"Cycles: (\d+)", content)
         if match:
-            cycles = int(match.group(1))
-            result["cycles"] = cycles
+            result["cycles"] = int(match.group(1)) * coefficient
         match = re.search(r"Utilization: (\d+.\d+)%", content)
         if match:
-            utilization = float(match.group(1))
-            result["utilization"] = utilization
+            result["utilization"] = float(match.group(1)) * coefficient
+        match = re.search(r"EDP\(J\*cycle\): (\d+.\d+e[+-]\d+)", content)
+        if match:
+            result["edp"] = float(match.group(1)) * coefficient
     return result
 
 def best_by_metric(results, metric, lower_is_better = True):
@@ -255,22 +258,26 @@ def summary(results, msg = "RESULTS SUMMARY:", print_tested = False):
     if print_tested:
         print("\n------> Tested configurations:\n" + "\n---\n".join(map(pretty_format_dict, results)))
         print("\n")
+    print("\n---> Best by EDP-sum:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "edp"))))
     print("\n---> Best by ENERGY used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "energy"))))
     print("\n---> Best by CYCLES used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "cycles"))))
     print("\n---> Best by UTILIZATION used:\n" + "\n---\n".join(map(pretty_format_dict, best_by_metric(results, "utilization", False))))
     if options['table']:
         print("\n\nSUMMARY TABLE:")
-        references = {k : results[0][k] for k in hw_configs[0].keys() if k != 'metrics'}
-        keep = []
-        metrics = [k for k in results[0]['metrics'].keys()]
-        for res in results[1:]:
-            for k in [k for k in references.keys() if k not in keep]:
-                if res[k] != references[k]:
-                    keep.append(k)
-        table = PrettyTable(keep + metrics)
-        for res in results:
-            table.add_row([res[k] for k in keep] + [(res['metrics'][k] if isinstance(res['metrics'][k], int) else "{:.3f}".format(res['metrics'][k])) for k in metrics])
-        print(table)
+        if len(results) > 0:
+            references = {k : results[0][k] for k in hw_configs[0].keys() if k != 'metrics'}
+            keep = []
+            metrics = [k for k in results[0]['metrics'].keys()]
+            for res in results[1:]:
+                for k in [k for k in references.keys() if k not in keep]:
+                    if res[k] != references[k]:
+                        keep.append(k)
+            table = PrettyTable(keep + metrics)
+            for res in results:
+                table.add_row([res[k] for k in keep] + [(res['metrics'][k] if isinstance(res['metrics'][k], int) else "{:.3f}".format(res['metrics'][k])) for k in metrics])
+            print(table)
+        else:
+            print("NO RESULTS FOUND FROM PREVIOUS RUNS!\nEnsure that a folder called \"outputs_hwdse\" exists in the current directory.")
 
 # Summary only, print it and quit
 if options['summary_only']:
@@ -352,6 +359,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
     print(f"\n--------> Working on config: {idx}")
     print(pretty_format_dict(hw_config), end = "\n")
 
+    total_layers = 0
     for layer in target_ops:
         print(f"\n----> Config {idx}, working on layer: {layer}\n")
 
@@ -440,6 +448,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
             if hw_config['use_IMC_as_buffer']:
                 print("WARNING: \"use_IMC_as_buffer\" has not yet been implemented!")
 
+        # Setup fusion constraints
         if spec.constraints['targets'] is None:
             spec.constraints['targets'] = tl.constraints.ConstraintsList()
         if is_fusion and layer in fusable:
@@ -503,21 +512,24 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
                     spec.constraints['targets'].append(tl.constraints.constraint_factory({'target': target, 'type': 'dataspace', 'bypass': ["Inputs", "Weights", "Outputs"] if options['pay_writeback_in_matmul'] else ["Inputs", "Weights"]}))
                     print(f"Adding constraint (bypasses): {dict(spec.constraints['targets'][-1].items())}")
 
+        # Run the Timeloop mapper
         output_dir = f"{os.curdir}/outputs_hwdse/{idx}/outputs_{layer}" + (("_" + sys.argv[2]) if level_for_fusion else "")
         if not os.path.exists(output_dir): os.makedirs(output_dir)
-        tl.call_mapper(spec, output_dir=output_dir)  # Run the Timeloop mapper
+        tl.call_mapper(spec, output_dir=output_dir)
         
+        # Collect results
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Fusion optimized: {is_fusion}\nFusion constraints: {constrained_factors}")
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Hardware Configuration: {pretty_format_dict(hw_config)}")
         try:
-            recover_metrics(output_dir, spec.variables['HEADS'] if layer in multihead else 1)
+            metrics = recover_metrics(output_dir, spec.variables['HEADS'] if layer in multihead and not options['ignore_heads'] else 1)
         except:
             print(f"\n\n------------> ERROR!! Mapping failed for layer ->{layer}<- on config:\n{pretty_format_dict(hw_config)}")
             print("Assuming metrics = +inf or 0 depending on the case...\n")
             metrics = {
                 'energy': math.inf,
                 'cycles': math.inf,
-                'utilization': 0
+                'utilization': 0,
+                'edp': math.inf
             }
         append_to_file(f"{output_dir}/timeloop-mapper.map.txt", f"Relevant Metrics: {pretty_format_dict(metrics)}")
 
@@ -527,7 +539,9 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
             for k in metrics.keys():
                 hw_config['metrics'][k] += metrics[k]
 
-    hw_config['metrics']['utilization'] /= len(target_ops)
+        total_layers += spec.variables['HEADS'] if layer in multihead and not options['ignore_heads'] else 1
+
+    hw_config['metrics']['utilization'] /= total_layers
 
     output_dir = f"{os.curdir}/outputs_hwdse/{idx}"
     with open(f"{output_dir}/hw_config.json", 'w') as file:

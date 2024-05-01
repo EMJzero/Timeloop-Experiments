@@ -37,7 +37,7 @@ if options['help']:
     print("-nef, --no_e_fusion\tDo not enforce E=1 when doing fusions (useful only on matmul layers).")
     print("\t\t\t[Increases the latency with which column vectors are ready, due to DRAM accesses]")
     print("-lf, --l_fusion\t\tEnforce L=1 when doing fusions (useful only on matmul layers).")
-    print("\t\t\t[Stores the entirety of the output in the Accumulator, useful NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
+    print("\t\t\t[Stores the entirety of the output in the Accumulator, useful if NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
     print("-pwim, --pay_wb_in_mm\tWhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
     print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
     sys.exit(0)
