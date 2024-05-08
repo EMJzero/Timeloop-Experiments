@@ -52,7 +52,9 @@ desc_1 = [
     "Third matmul, computes V' with the convex combinations in V*Scores.",
     "Fourth matmul, computes Out from V' with a projection.",
     "Fifth matmul, first projection of the FF block, increases the latent dimension.",
-    "Sixth matmul, second projection of the FF block, decreases back the latent dimension."
+    "Sixth matmul, second projection of the FF block, decreases back the latent dimension.",
+    "Softmax operation, applied column-wise on the output of \"KTQ\".",
+    "LayerNorm operation, applied column-wise on the output of \"Out\"."
 ]
 
 # MUST STAY ORDERED! Set D,E=1 for all those above the specified one!

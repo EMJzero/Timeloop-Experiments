@@ -1,0 +1,342 @@
+Arguments provided: ['hwdse_run.py', '-so', '-t']
+
+
+RESULTS SUMMARY:
+
+
+------> Tested configurations:
+scratchpad_size: 524288
+accumulator_size: 11915
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 22
+pe_cols: 22
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 199923200000.0
+	cycles: 1014759552
+	utilization: 45.18
+	edp: 4027200.0
+---
+scratchpad_size: 1048576
+accumulator_size: 16384
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 32
+pe_cols: 8
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 134585440000.0
+	cycles: 704643200
+	utilization: 86.66666666666667
+	edp: 2366400.0
+---
+scratchpad_size: 524288
+accumulator_size: 16384
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 16
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 144836000000.0
+	cycles: 676331648
+	utilization: 97.52666666666666
+	edp: 2176000.0
+---
+scratchpad_size: 524288
+accumulator_size: 8192
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 8
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 119765120000.0
+	cycles: 872415360
+	utilization: 60.0
+	edp: 2476800.0
+---
+scratchpad_size: 1048576
+accumulator_size: 32768
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 16
+pe_cols: 16
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 129884160000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2266880.0
+---
+scratchpad_size: 1048576
+accumulator_size: 65536
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 8
+pe_cols: 32
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 162729280000.0
+	cycles: 673448064
+	utilization: 98.86
+	edp: 2412800.0
+---
+scratchpad_size: 1048576
+accumulator_size: 16384
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 32
+pe_cols: 8
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 194769120000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2539200.0
+---
+scratchpad_size: 524288
+accumulator_size: 32768
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 8
+pe_cols: 32
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 138666560000.0
+	cycles: 810025088
+	utilization: 66.09666666666666
+	edp: 2508800.0
+---
+scratchpad_size: 524288
+accumulator_size: 16384
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 16
+pe_cols: 32
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 144836000000.0
+	cycles: 676331648
+	utilization: 65.42999999999999
+	edp: 2176000.0
+---
+scratchpad_size: 524288
+accumulator_size: 8192
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 8
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 163281120000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2240000.0
+---
+scratchpad_size: 524288
+accumulator_size: 16384
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 16
+pe_cols: 16
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 116650720000.0
+	cycles: 805306496
+	utilization: 66.66666666666667
+	edp: 2310400.0
+---
+scratchpad_size: 524288
+accumulator_size: 32768
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 8
+pe_cols: 32
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 122395680000.0
+	cycles: 872415360
+	utilization: 60.0
+	edp: 2504000.0
+---
+scratchpad_size: 524288
+accumulator_size: 32768
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 155061760000.0
+	cycles: 623902848
+	utilization: 86.72333333333334
+	edp: 2060800.0
+---
+scratchpad_size: 1048576
+accumulator_size: 32768
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 16
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 164028640000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2409600.0
+---
+scratchpad_size: 1048576
+accumulator_size: 65536
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 8
+pe_cols: 32
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 137208960000.0
+	cycles: 704643200
+	utilization: 86.66666666666667
+	edp: 2379200.0
+
+
+
+---> Best by EDP-sum:
+scratchpad_size: 524288
+accumulator_size: 32768
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 155061760000.0
+	cycles: 623902848
+	utilization: 86.72333333333334
+	edp: 2060800.0
+
+---> Best by ENERGY used:
+scratchpad_size: 524288
+accumulator_size: 16384
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 16
+pe_cols: 16
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 116650720000.0
+	cycles: 805306496
+	utilization: 66.66666666666667
+	edp: 2310400.0
+
+---> Best by CYCLES used:
+scratchpad_size: 524288
+accumulator_size: 32768
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 155061760000.0
+	cycles: 623902848
+	utilization: 86.72333333333334
+	edp: 2060800.0
+
+---> Best by UTILIZATION used:
+scratchpad_size: 1048576
+accumulator_size: 32768
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 16
+pe_cols: 16
+dataflow: OS
+rf_size: 1024
+metrics: 
+	energy: 129884160000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2266880.0
+---
+scratchpad_size: 1048576
+accumulator_size: 16384
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 32
+pe_cols: 8
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 194769120000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2539200.0
+---
+scratchpad_size: 524288
+accumulator_size: 8192
+scratchpad_bandwidth: 16
+accumulator_bandwidth: 4
+pe_rows: 32
+pe_cols: 8
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 163281120000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2240000.0
+---
+scratchpad_size: 1048576
+accumulator_size: 32768
+scratchpad_bandwidth: 32
+accumulator_bandwidth: 8
+pe_rows: 16
+pe_cols: 16
+dataflow: WS
+rf_size: 1024
+metrics: 
+	energy: 164028640000.0
+	cycles: 671088768
+	utilization: 100.0
+	edp: 2409600.0
+
+
+SUMMARY TABLE:
++-----------------+------------------+----------------------+-----------------------+---------+---------+----------+------------------+------------+-------------+-------------+
+| scratchpad_size | accumulator_size | scratchpad_bandwidth | accumulator_bandwidth | pe_rows | pe_cols | dataflow |      energy      |   cycles   | utilization |     edp     |
++-----------------+------------------+----------------------+-----------------------+---------+---------+----------+------------------+------------+-------------+-------------+
+|      524288     |      32768       |          16          |           4           |    32   |    16   |    WS    | 155061760000.000 | 623902848  |    86.723   | 2060800.000 |
+|      524288     |      16384       |          16          |           4           |    16   |    16   |    WS    | 144836000000.000 | 676331648  |    97.527   | 2176000.000 |
+|      524288     |      16384       |          16          |           4           |    16   |    32   |    WS    | 144836000000.000 | 676331648  |    65.430   | 2176000.000 |
+|      524288     |       8192       |          16          |           4           |    32   |    8    |    WS    | 163281120000.000 | 671088768  |   100.000   | 2240000.000 |
+|     1048576     |      32768       |          32          |           8           |    16   |    16   |    OS    | 129884160000.000 | 671088768  |   100.000   | 2266880.000 |
+|      524288     |      16384       |          16          |           4           |    16   |    16   |    OS    | 116650720000.000 | 805306496  |    66.667   | 2310400.000 |
+|     1048576     |      16384       |          32          |           8           |    32   |    8    |    OS    | 134585440000.000 | 704643200  |    86.667   | 2366400.000 |
+|     1048576     |      65536       |          32          |           8           |    8    |    32   |    OS    | 137208960000.000 | 704643200  |    86.667   | 2379200.000 |
+|     1048576     |      32768       |          32          |           8           |    16   |    16   |    WS    | 164028640000.000 | 671088768  |   100.000   | 2409600.000 |
+|     1048576     |      65536       |          32          |           8           |    8    |    32   |    WS    | 162729280000.000 | 673448064  |    98.860   | 2412800.000 |
+|      524288     |       8192       |          16          |           4           |    32   |    8    |    OS    | 119765120000.000 | 872415360  |    60.000   | 2476800.000 |
+|      524288     |      32768       |          16          |           4           |    8    |    32   |    OS    | 122395680000.000 | 872415360  |    60.000   | 2504000.000 |
+|      524288     |      32768       |          16          |           4           |    8    |    32   |    WS    | 138666560000.000 | 810025088  |    66.097   | 2508800.000 |
+|     1048576     |      16384       |          32          |           8           |    32   |    8    |    WS    | 194769120000.000 | 671088768  |   100.000   | 2539200.000 |
+|      524288     |      11915       |          16          |           4           |    22   |    22   |    WS    | 199923200000.000 | 1014759552 |    45.180   | 4027200.000 |
++-----------------+------------------+----------------------+-----------------------+---------+---------+----------+------------------+------------+-------------+-------------+

@@ -56,7 +56,8 @@ def parse_options():
         "summary_only": if_match_and_remove("-so") or if_match_and_remove("--summary_only"),
         "table": if_match_and_remove("-t") or if_match_and_remove("--table"),
         "initial_idx": if_match_and_remove("-i", True) or if_match_and_remove("--init_idx"),
-        "ignore_heads": if_match_and_remove("-ih") or if_match_and_remove("--ignore_heads")
+        "ignore_heads": if_match_and_remove("-ih") or if_match_and_remove("--ignore_heads"),
+        "imperfect_fact": if_match_and_remove("-if") or if_match_and_remove("--imperfect_fact")
     }
     return options
 
@@ -78,8 +79,9 @@ if options['help']:
     print("-vc, --vict_cond <num>\tUses <num> to specify the number of sub-optimal mappings to encounter before terminating a thread,\n\t\t\tthat is, the victory condition. Default is 160, set to around 4000 to guarantee optimal mappings.")
     print("-so, --summary_only\tDoes not run the HWDSE, instead prints the results from a previously run (from the '/outputs_hwdse' folder).")
     print("-t, --table\t\tPrints a pretty-table of the summary after its textual form.")
-    print("-i, --init_idx <idx>\tSets to <idx> the index of the first tried configuration, continuing from there.")
+    print("-i, --init_idx <idx>\tSets to <idx> the index of the first tried configuration, continuing from there. Default is 0.")
     print("-ih, --ignore_heads\tIgnores the fact that some layers are repeated once per head, considering them one time only.")
+    print("-if, --imperfect_fact\tEnables imperfect factorization ('Ruby' version of Timeloop).")
     sys.exit(0)
 
 
@@ -301,7 +303,9 @@ desc_1 = [
     "Third matmul, computes V' with the convex combinations in V*Scores.",
     "Fourth matmul, computes Out from V' with a projection.",
     "Fifth matmul, first projection of the FF block, increases the latent dimension.",
-    "Sixth matmul, second projection of the FF block, decreases back the latent dimension."
+    "Sixth matmul, second projection of the FF block, decreases back the latent dimension.",
+    "Softmax operation, applied column-wise on the output of \"KTQ\".",
+    "LayerNorm operation, applied column-wise on the output of \"Out\"."
 ]
 
 # MUST STAY ORDERED! Set D,E=1 for all those above the specified one!
@@ -355,7 +359,6 @@ constrained_factors = tl.constraints.Factors(constrained_factors)
 
 idx = int(options['initial_idx']) if options['initial_idx'] else 0
 for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs)):
-    idx += 1
     print(f"\n--------> Working on config: {idx}")
     print(pretty_format_dict(hw_config), end = "\n")
 
@@ -387,7 +390,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         spec.mapper.victory_condition = options['victory_condition'] if options['victory_condition'] else 160
         if options['live']:
             spec.mapper.live_status = True
-        spec.mapspace.template = 'uber' #'ruby'
+        spec.mapspace.template = 'uber' if not options['imperfect_fact'] else 'ruby'
 
         # Setup the architecture
         WS_row_spatial_constr_factors = tl.constraints.Factors(["L=1", "E=1", f"D>={hw_config['pe_rows']//2}"])
@@ -548,6 +551,7 @@ for hw_config in (hw_configs if not options['mixup'] else mixup_dicts(hw_configs
         file.write(json.dumps(hw_config, indent = 1))
     
     results.append(hw_config)
+    idx += 1
 
 def best_by_metric(results, metric, lower_is_better = True):
     best = math.inf if lower_is_better else 0
