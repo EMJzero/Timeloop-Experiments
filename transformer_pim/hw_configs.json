@@ -1,0 +1,57 @@
+[
+    {
+        "shared_glb_size": 262144,
+        "shared_glb_bandwidth": 16,
+        "pe_rows": 128,
+        "pe_cols": 128,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }, {
+        "shared_glb_size": 262144,
+        "shared_glb_bandwidth": 16,
+        "pe_rows": 64,
+        "pe_cols": 256,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }, {
+        "shared_glb_size": 262144,
+        "shared_glb_bandwidth": 16,
+        "pe_rows": 256,
+        "pe_cols": 64,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }, {
+        "shared_glb_size": 524288,
+        "shared_glb_bandwidth": 32,
+        "pe_rows": 128,
+        "pe_cols": 128,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }, {
+        "shared_glb_size": 524288,
+        "shared_glb_bandwidth": 32,
+        "pe_rows": 64,
+        "pe_cols": 256,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }, {
+        "shared_glb_size": 524288,
+        "shared_glb_bandwidth": 32,
+        "pe_rows": 256,
+        "pe_cols": 64,
+        "dataflow": "WS",
+        "use_IMC_as_buffer": false,
+        "IMC_buffer_bandwidth": 16,
+        "rf_size": 1024
+    }
+]

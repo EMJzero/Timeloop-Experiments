@@ -57,7 +57,8 @@ def parse_options():
         "table": if_match_and_remove("-t") or if_match_and_remove("--table"),
         "initial_idx": if_match_and_remove("-i", True) or if_match_and_remove("--init_idx"),
         "ignore_heads": if_match_and_remove("-ih") or if_match_and_remove("--ignore_heads"),
-        "imperfect_fact": if_match_and_remove("-if") or if_match_and_remove("--imperfect_fact")
+        "imperfect_fact": if_match_and_remove("-if") or if_match_and_remove("--imperfect_fact"),
+        "configs": if_match_and_remove("-c", True) or if_match_and_remove("--configs")
     }
     return options
 
@@ -82,6 +83,7 @@ if options['help']:
     print("-i, --init_idx <idx>\tSets to <idx> the index of the first tried configuration, continuing from there. Default is 0.")
     print("-ih, --ignore_heads\tIgnores the fact that some layers are repeated once per head, considering them one time only.")
     print("-if, --imperfect_fact\tEnables imperfect factorization ('Ruby' version of Timeloop).")
+    print("-c, --configs <path>\tSources the HW configurations to test from the specified file (<path>),\n\t\t\tassumed to be specified as an array of dictionaries in JSON.")
     sys.exit(0)
 
 
@@ -100,6 +102,8 @@ if options['help']:
 ## normop only
 #'rf_size': size of a column vector processed during NOs
 # --> the above is measured in number-of-values-stored (hence, bytes since here data is in 8bits)
+
+hw_config_keys = ['scratchpad_size', 'accumulator_size', 'scratchpad_bandwidth', 'accumulator_bandwidth', 'pe_rows', 'pe_cols', 'dataflow', 'rf_size']
 
 hw_configs = [
     # 3 designs varying in SA rows/cols
@@ -179,6 +183,16 @@ hw_configs = [
         'rf_size': 1024
     }
 ]
+
+if options['configs']:
+    with open(options['configs'], 'r') as f:
+        hw_configs = json.load(f)
+
+for i in range(len(hw_configs)):
+    for key in hw_config_keys:
+        if key not in hw_configs[i]:
+            print(f"Error in config {i}: missing key \"{key}\"")
+            sys.exit(0)
 
 results = []
 

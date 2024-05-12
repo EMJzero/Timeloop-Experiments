@@ -13,11 +13,12 @@ The steps required to utilize the hereby examples are as follow:
     ```
     git clone https://github.com/EMJzero/Timeloop-Experiments.git
     ```
--   Install Accelergy's estimation tables for IMC:
+-   Install Accelergy's estimation tables:
     ```
+    accelergyTables -r Timeloop-Experiments/transformer_gemmini/free_data
     accelergyTables -r Timeloop-Experiments/transformer_pim/PIM_estimation_tables
     ```
-    Remember now that to modify any metric fetched from those tables, the path above is where you need to modify them, ignore the copy of the same folder under `transformer_pim_backup`.
+    Remember now that to modify any metric fetched from those tables, the path above is where you need to modify them, ignore the copies of the same folders under `transformer_pim_backup`.
 
 ## Documentation
 
@@ -64,6 +65,11 @@ cd Timeloop-Experiments/transformer_pim
 vim +$(grep -n -m1 "hw_configs" hwdse_run.py | cut -d: -f1) hwdse_run.py
 ```
 The provided example configurations include all the architectural parameters that the script can automatically alter.
+> As of the latest update, you can also **provide the configurations via a file** formatted as JSON, see the `-c` option and the `hw_configs.json` files for details. Note that onfigurations provided in this way override those hard-coded in the script.
+> ```sh
+> # an example usage:
+> sudo python3 hwdse_run.py KTQ VScores softmax -c hw_configs.json -vc 3200 -t
+> ```
 
 Then, you just need to run the Python script:
 ```sh
