@@ -143,5 +143,41 @@
         "pe_cols": 16,
         "dataflow": "OS",
         "rf_size": 1024
+    }, {
+        "scratchpad_size": 524288,
+        "accumulator_size": 16384,
+        "scratchpad_bandwidth": 16,
+        "accumulator_bandwidth": 4,
+        "pe_rows": 16,
+        "pe_cols": 128,
+        "dataflow": "WS",
+        "rf_size": 1024
+    }, {
+        "scratchpad_size": 524288,
+        "accumulator_size": 2048,
+        "scratchpad_bandwidth": 16,
+        "accumulator_bandwidth": 4,
+        "pe_rows": 128,
+        "pe_cols": 16,
+        "dataflow": "WS",
+        "rf_size": 1024
+    }, {
+        "scratchpad_size": 524288,
+        "accumulator_size": 16384,
+        "scratchpad_bandwidth": 16,
+        "accumulator_bandwidth": 4,
+        "pe_rows": 16,
+        "pe_cols": 256,
+        "dataflow": "WS",
+        "rf_size": 1024
+    }, {
+        "scratchpad_size": 524288,
+        "accumulator_size": 1024,
+        "scratchpad_bandwidth": 16,
+        "accumulator_bandwidth": 4,
+        "pe_rows": 256,
+        "pe_cols": 16,
+        "dataflow": "WS",
+        "rf_size": 1024
     }
 ]

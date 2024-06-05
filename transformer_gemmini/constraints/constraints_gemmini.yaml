@@ -8,10 +8,11 @@ constraints:
       type: dataspace
       keep: [Inputs, Outputs, Weights]
       bypass: []
-    #- target: DRAM
-    #  type: temporal
-    #  factors: D=1 E=1
-    #  permutation: EDL
+    - target: DRAM
+      type: temporal
+      factors: [D=6, E=2, L=8]
+      # from inner to outer (opposite of my notation)
+      permutation: [D, E, L]
     # =======================================
     # Scratchpad Constraints
     # =======================================
@@ -22,7 +23,8 @@ constraints:
     - target: Scratchpad
       type: temporal
       # This is needed when fusing, but is it needed otherwise?
-      factors: [D=1] #[E=1, D=1]
+      factors: [D=32, E=32, L=1]
+      permutation: [L, E, D]
       #maximize_dims: [[D, E], [L]]
       #maximize_dims_capacity: max(EMBEDDING, SEQ_LENGTH)
     #- target: Scratchpad
@@ -35,6 +37,10 @@ constraints:
       type: dataspace
       keep: [Outputs]
       bypass: [Inputs, Weights]
+    - target: Accumulator
+      type: temporal
+      factors: [D=1, E=1, L=32]
+      permutation: [L, E, D]
     #- target: Accumulator
     #  type: spatial
     #  factors: [E=1, D=1]
@@ -69,7 +75,8 @@ constraints:
       bypass: [Inputs, Outputs]
     - target: Registers
       type: temporal
-      factors: [E=1, D=1, L=16] # the 16 here is not mandatory, but the Gemmini ISA seems to imply it...
+      factors: [E=1, D=1, L=16]
+      permutation: [L, E, D]
     # =======================================
     # OS Registers Constraints
     # =======================================

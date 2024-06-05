@@ -1,0 +1,66 @@
+constraints:
+  version: 0.4
+  targets:
+    # =======================================
+    # DRAM
+    # =======================================
+    - target: DRAM
+      type: temporal
+      factors: [D=2, E=1, L=256]
+      permutation: [L, D, E]
+    # =======================================
+    # GlobalBuffer Constraints
+    # =======================================
+    - target: GlobalBuffer
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [L, E, D]
+    # =======================================
+    # PE Constraints
+    # =======================================
+    - target: PE
+      type: spatial
+      permutation: [D, E, R, S, L, Q, N]
+      factors: [R=1, S=1, L=1, Q=1, N=1,       D=8, E=2]
+    # =======================================
+    # PEInputBuffer Constraints
+    # =======================================
+    - target: PEInputBuffer
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [L, E, D]
+    # =======================================
+    # distributed_buffers Constraints
+    # =======================================
+    - target: distributed_buffers
+      type: spatial
+      permutation: [D, E, Q, R, S, L, N]
+      factors: [L=1, Q=1, R=1, S=1, E=1, N=1,       D=4]
+    # =======================================
+    # PEWeightBuffer Constraints
+    # =======================================
+    - target: PEWeightBuffer
+      type: temporal
+      factors: [D=6, E=1, L=1]
+      permutation: [L, E, D]
+    # =======================================
+    # PEAccuBuffer Constraints
+    # =======================================
+    - target: PEAccuBuffer
+      type: temporal
+      factors: [D=8, E=128, L=16]
+      permutation: [L, D, E]
+    # =======================================
+    # reg_mac Constraints
+    # =======================================
+    - target: reg_mac
+      type: spatial
+      permutation: [E, D, Q, R, S, L, N]
+      factors: [L=1, Q=1, R=1, S=1, D=1, N=1,       E=4]
+    # =======================================
+    # PEWeightRegs Constraints
+    # =======================================
+    - target: PEWeightRegs
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [D, E, L]

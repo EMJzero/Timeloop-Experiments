@@ -15,7 +15,9 @@ architecture:
       datawidth: 8
       width: 64 # replaces block_size, dunno why...
       #block_size: 64
-      shared_bandwidth: 8
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
+
 
   - !Container
     name: Chip
@@ -45,7 +47,7 @@ architecture:
     spatial: {meshY: 16} # was 16
     constraints:
       spatial:
-        factors: [E=1, L=1] # weight or output stationary
+        factors: [E=1, L=1, D=16] # weight or output stationary
 
   - !Component
     name: Accumulator
@@ -72,7 +74,7 @@ architecture:
     constraints:
       spatial:
         #factors: [D=1, E=1] # output stationary
-        factors: [D=1, L=1] # weight stationary
+        factors: [D=1, L=1, E=16] # weight stationary
         #factors: [D=1] # weight or output stationary
 
   - !Component

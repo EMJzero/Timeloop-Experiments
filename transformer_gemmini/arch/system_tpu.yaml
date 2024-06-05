@@ -1,0 +1,150 @@
+architecture:
+  version: 0.4
+  nodes:
+  - !Container
+    name: System
+    attributes:
+      latency: "1ns"
+    
+  - !Component
+    name: DRAM
+    class: DRAM
+    attributes:
+      type: "DDR3"
+      instances: 1
+      datawidth: 8
+      width: 64
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
+    constraints:
+      dataspace:
+        keep: [Inputs, Outputs]
+        bypass: [Weights]
+
+  - !Component
+    name: WeightsDRAM
+    class: DRAM
+    attributes:
+      type: "DDR3"
+      instances: 1
+      datawidth: 8
+      width: 64
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
+    constraints:
+      dataspace:
+        keep: [Weights]
+        bypass: [Inputs, Outputs]
+
+
+  - !Container
+    name: Chip
+    attributes:
+      technology: "28nm"
+
+  - !Component
+    name: UnifiedBuffer 
+    class: SRAM
+    attributes:
+      entries: 512*2**10
+      depth: 32*2**10
+      width: 128
+      instances: 1
+      meshX: 1
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 4
+      read_bandwidth: 16 # byte/cycle
+      write_bandwidth: 16 # byte/cycle
+      network_fill_latency: 1
+      network_drain_latency: 1
+    constraints:
+      dataspace:
+        keep: [Inputs]
+        bypass: [Weights, Outputs]
+  
+  - !Component
+    name: WeightsFIFO 
+    class: SRAM
+    attributes:
+      entries: 4*2**16
+      depth: 2**14
+      width: 128
+      instances: 1
+      meshX: 1
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 4
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
+      network_fill_latency: 1
+      network_drain_latency: 1
+    constraints:
+      dataspace:
+        keep: [Weights]
+        bypass: [Inputs, Outputs]
+
+  - !Container
+    name: PERows
+    spatial: {meshY: 256} # was 16
+    constraints:
+      spatial:
+        factors: [E=1, L=1, D=256] # weight or output stationary
+
+  - !Component
+    name: Accumulator
+    class: SRAM
+    attributes:
+      entries: 2048*2
+      depth: 2048*2
+      width: 32
+      datawidth: 32
+      network_word_bits: 16
+      n_rdwr_ports: 2
+      n_banks: 2
+      read_bandwidth: 4 # byte/cycle
+      write_bandwidth: 4 # byte/cycle
+      meshY: 256 # was instances
+      network_fill_latency: 1
+      network_drain_latency: 1
+    constraints:
+      dataspace:
+        keep: [Outputs]
+        bypass: [Inputs, Weights]
+  
+  - !Container
+    name: PECols # only the K dim can be parallelized across Accumulator columns
+    spatial: {meshX: 256} # was 16
+    constraints:
+      spatial:
+        #factors: [D=1, E=1] # output stationary
+        factors: [D=1, L=1, E=256] # weight stationary
+        #factors: [D=1] # weight or output stationary
+
+  - !Component
+    name: Registers
+    class: SRAM
+    attributes:
+      depth: 2
+      width: 8
+      entries: 2
+      datawidth: 8
+      n_rdwr_ports: 2
+      n_banks: 1
+      #no bandwidth specified = infinite bandwidth
+      #instances: 256 # was 256
+      meshX: 256 # was instances
+      meshY: 256 # was instances
+    constraints:
+      dataspace:
+        keep: [Weights]
+        bypass: [Inputs, Outputs]
+  
+  - !Component
+    name: MAC
+    class: intmac
+    attributes:
+      multiplier_width: 8 # was datawidth
+      adder_width: 32 # same as accumulator datawidth
+      meshX: 256
+      meshY: 256

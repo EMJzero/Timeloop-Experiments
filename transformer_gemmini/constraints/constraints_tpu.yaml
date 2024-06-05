@@ -1,0 +1,45 @@
+constraints:
+  version: 0.4
+  targets:
+    # =======================================
+    # DRAM
+    # =======================================
+    - target: DRAM
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [E, D, L]
+    # =======================================
+    # WeightsDRAM
+    # =======================================
+    - target: WeightsDRAM
+      type: temporal
+      factors: [D=1, E=1, L=32]
+      permutation: [E, D, L]
+    # =======================================
+    # UnifiedBuffer Constraints
+    # =======================================
+    - target: UnifiedBuffer
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [E, D, L]
+    # =======================================
+    # WeightsFIFO Constraints
+    # =======================================
+    - target: WeightsFIFO
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [E, D, L]
+    # =======================================
+    # Outputs Accumulator Constraints
+    # =======================================
+    - target: Accumulator
+      type: temporal
+      factors: [D=1, E=16, L=128]
+      permutation: [L, E, D]
+    # =======================================
+    # WS Registers Constraints
+    # =======================================
+    - target: Registers
+      type: temporal
+      factors: [D=1, E=1, L=1]
+      permutation: [E, D, L]

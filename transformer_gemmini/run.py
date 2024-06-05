@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import timeloopfe.v4 as tl
 
 # L = inputs cols
@@ -202,7 +203,9 @@ spec.mapspace.template = 'uber' #'ruby'
 
 output_dir = f"{os.curdir}/outputs_{sys.argv[1]}" + (("_" + sys.argv[2]) if level_for_fusion else "")
 if not os.path.exists(output_dir): os.makedirs(output_dir)
+start_time = time.time()
 tl.call_mapper(spec, output_dir=output_dir)  # Run the Timeloop mapper
+print(f"\nTimeloop finished in: {time.time() - start_time:.3f}s")
 
 #stats = open("outputs/timeloop-mapper.stats.txt").read()
 #print(stats[stats.index("Summary Stats") :])

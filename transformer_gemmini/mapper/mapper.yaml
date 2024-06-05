@@ -1,10 +1,18 @@
 mapper:
   version: 0.4
-  optimization_metrics: [ edp, delay, energy ]
   live_status: False
-  num_threads: 12
-  timeout: 15000
-  victory_condition: 0 #8000
   diagnostics: False
   emit_whoop_nest: True
+  optimization_metrics: [ edp, delay, energy ]
+  
+  # NICE ONES:
+  num_threads: 12
+  timeout: 15000
+  victory_condition: 7500
   sync_interval: 2500
+
+  # DEFAULTS:
+  #num_threads: 32
+  #timeout: 1000
+  #victory_condition: 500
+  #sync_interval: 0

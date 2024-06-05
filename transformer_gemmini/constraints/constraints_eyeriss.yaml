@@ -1,0 +1,48 @@
+constraints:
+  version: 0.4
+  targets:
+    # =======================================
+    # DRAM
+    # =======================================
+    - target: DRAM
+      type: temporal
+      factors: [D=8, E=8, L=16]
+      permutation: [E, D, L]
+    # =======================================
+    # shared_glb Constraints
+    # =======================================
+    - target: shared_glb
+      type: temporal
+      factors: [D=1, E=8, L=256]
+      permutation: [L, E, D]
+    # =======================================
+    # PE_column Constraints
+    # =======================================
+    - target: PE_column
+      type: spatial
+      permutation: [N, E, L, R, S, Q, D]
+      factors: [N=1, E=1, L=1, R=1, S=1,    Q=1, D=8]
+      split: 999
+    # =======================================
+    # PE Constraints
+    # =======================================
+    - target: PE
+      type: spatial
+      permutation: [N, L, Q, R, S, E, D]
+      factors: [N=1, L=1, Q=1, R=1,        S=1, E=1, D=12]
+      split: 0
+    # =======================================
+    # WS Registers Constraints
+    # =======================================
+    - target: ifmap_spad
+      type: temporal
+      permutation: [N, D, E, L, Q, R, S]
+      factors: [N=1, D=1, E=1, L=1, Q=1, R=1, S=1]
+    - target: weights_spad
+      type: temporal
+      permutation: [N, D, E, L, Q, R, S]
+      factors: [N=1, D=1, E=16, L=1, Q=1, R=1, S=1]
+    - target: psum_spad
+      type: temporal
+      permutation: [N, D, E, L, Q, R, S]
+      factors: [N=1, D=4, E=1, L=1, Q=1, R=1, S=1]
