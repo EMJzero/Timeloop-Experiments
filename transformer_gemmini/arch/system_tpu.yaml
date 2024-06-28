@@ -46,8 +46,8 @@ architecture:
     name: UnifiedBuffer 
     class: SRAM
     attributes:
-      entries: 512*2**10
-      depth: 32*2**10
+      entries: 24*2**20
+      depth: 24*2**16
       width: 128
       instances: 1
       meshX: 1
@@ -117,9 +117,7 @@ architecture:
     spatial: {meshX: 256} # was 16
     constraints:
       spatial:
-        #factors: [D=1, E=1] # output stationary
         factors: [D=1, L=1, E=256] # weight stationary
-        #factors: [D=1] # weight or output stationary
 
   - !Component
     name: Registers
@@ -139,6 +137,9 @@ architecture:
       dataspace:
         keep: [Weights]
         bypass: [Inputs, Outputs]
+      temporal:
+        factors: [D=1, E=1]
+        permutation: [E, D, L]
   
   - !Component
     name: MAC

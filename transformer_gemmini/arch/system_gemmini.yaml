@@ -91,6 +91,10 @@ architecture:
       #instances: 256 # was 256
       meshX: 16 # was instances
       meshY: 16 # was instances
+    constraints:
+      temporal:
+          factors: [D=1, E=1, L=16]
+          permutation: [E, D, L]
   
   - !Component
     name: MAC

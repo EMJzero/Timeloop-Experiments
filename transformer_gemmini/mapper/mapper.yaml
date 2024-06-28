@@ -16,3 +16,10 @@ mapper:
   #timeout: 1000
   #victory_condition: 500
   #sync_interval: 0
+
+  # EXHAUSTIVE:
+  #algorithm: exhaustive
+  #num_threads: 64
+  #timeout: 0
+  #victory_condition: 0
+  #sync_interval: 0

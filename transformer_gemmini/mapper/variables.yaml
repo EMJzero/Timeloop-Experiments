@@ -21,5 +21,10 @@ variables:
   EMBEDDING_HEADS: 64
   EMBEDDING_3: 3072
 
+  # for MAESTRO-BLAS GEMMs:
+  MB_D: 1
+  MB_E: 1
+  MB_L: 1
+
 #b8f3e5c cacti
 #9a8dc0d accelergy
