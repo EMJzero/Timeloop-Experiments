@@ -18,8 +18,9 @@ mapper:
   #sync_interval: 0
 
   # EXHAUSTIVE:
-  #algorithm: exhaustive
   #num_threads: 64
-  #timeout: 0
+  #timeout: 2147483647*2
   #victory_condition: 0
+  #algorithm: linear_pruned
   #sync_interval: 0
+  #search_size: 0

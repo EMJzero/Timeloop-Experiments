@@ -111,7 +111,9 @@ MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
 CONSTRAINTS_PATHs = {arch: f"{os.curdir}/constraints/constraints_{arch}.yaml" for arch in archs}
 VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
         
-output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLL/"
+output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLD/"
+#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLL/"
+#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLE/"
 
 for arch in archs:
     for layer in layers:
