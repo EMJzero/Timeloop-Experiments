@@ -23,6 +23,7 @@ def parse_options():
     options = {
         "help": if_match_and_remove("-h") or if_match_and_remove("--help"),
         "live": if_match_and_remove("-l") or if_match_and_remove("--live"),
+        "no-accel": if_match_and_remove("-na") or if_match_and_remove("--no-accel"),
     }
     return options
 
@@ -49,6 +50,7 @@ if options['help']:
     print("Available options:")
     print("-h, --help\t\tPrint this help menu.")
     print("-l, --live\t\tShow Timeloop's live status as it runs.")
+    print("-na, --no-accel\tDo not use Accelergy, rely on stored ERT and ART from previous experiments.")
     sys.exit(0)
 
 layer_dims = {
@@ -97,11 +99,11 @@ layer_dims = {
 bert_layers = ["KQV", "KTQ", "VScores", "FF1"]
 MB_layers = [f"MB{i+1}" for i in range(6)]
 harsh_layers = ["Harsh1", "Harsh2"]
-layers = bert_layers + MB_layers # + harsh_layers
+layers = bert_layers[0:1]# + MB_layers # + harsh_layers
 
 print(f"Arguments provided: {sys.argv}")
 
-archs = ["gemmini", "eyeriss", "simba"] #, "tpu"]
+archs = ["gemmini"]#, "eyeriss", "simba"] #, "tpu"]
 
 # Define relative paths
 ARCH_PATHs = {arch: f"{os.curdir}/arch/system_{arch}.yaml" for arch in archs}
@@ -110,16 +112,21 @@ PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{layer if layer in bert_layers else
 MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
 CONSTRAINTS_PATHs = {arch: f"{os.curdir}/constraints/constraints_{arch}.yaml" for arch in archs}
 VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
-        
+
 output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLD/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLL/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLE/"
+
+ERT_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ERT.yaml" for arch in archs}
+ART_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ART.yaml" for arch in archs}
 
 for arch in archs:
     for layer in layers:
         ARCH_PATH = ARCH_PATHs[arch]
         PROBLEM_PATH = PROBLEM_PATHs[layer]
         CONSTRAINTS_PATH = CONSTRAINTS_PATHs[arch]
+        ERT_PATH = ERT_PATHs[arch] 
+        ART_PATH = ARCH_PATHs[arch]
 
         print(f"\n\nCurrently working on:\n - layer: {layer}\n - architecture: {arch}\n")
 
@@ -157,12 +164,14 @@ for arch in archs:
         if not os.path.exists(current_output_dir): os.makedirs(current_output_dir)
         start_time = time.time()
         try:
-            tl.call_mapper(spec, output_dir=current_output_dir)  # Run the Timeloop mapper
+            extra_input_files = [ART_PATH, ERT_PATH] if options["no-accel"] else []
+            tl.call_mapper(spec, output_dir=current_output_dir, extra_input_files=extra_input_files)  # Run the Timeloop mapper
             execution_time = time.time() - start_time
             print(f"\nTimeloop finished in: {execution_time:.3f}s")
 
             append_to_file(f"{current_output_dir}/timeloop-mapper.stats.txt", f"Execution time:\t{execution_time:.3f}")
             print("\n\nMapping:")
             print(read_and_indent(f"{current_output_dir}/timeloop-mapper.map.txt"))
-        except Exception:
+        except Exception as e:
+            print(f"EXCEPTION: {e}")
             print(f"\n\n------------> ERROR!! Mapping failed for layer ->{layer}<- on arch {arch}")

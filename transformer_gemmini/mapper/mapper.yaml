@@ -19,7 +19,7 @@ mapper:
 
   # EXHAUSTIVE:
   #num_threads: 64
-  #timeout: 2147483647*2
+  #timeout: 2147483647
   #victory_condition: 0
   #algorithm: linear_pruned
   #sync_interval: 0
