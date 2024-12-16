@@ -26,7 +26,22 @@ def format_value(value, format_type):
         return f"{value:.2f}"
     return value
 
-def print_table(rows):
+def print_table(rows, pretty_table = False):
+    if pretty_table:
+        from prettytable import PrettyTable
+        table = PrettyTable(["Comp", "Arch", "EDP (J*cycle)", "Cycles", "Energy (uJ)", "MSE Runtime (s)"])
+        for row in rows:
+            table.add_row([
+                row['Comp'],
+                row['Arch'],
+                format_value(row['EDP (J*cycle)'], 'exp'),
+                str(row['Cycles']),
+                format_value(row['Energy (uJ)'], 'float'),
+                format_value(row['MSE Runtime (s)'], 'float')
+            ])
+        print(table)
+        return
+
     header = "| Comp | Arch | Mapper | EDP (J*cycle) | Cycles | Energy (uJ) | MSE Runtime (s) |"
     separator = "| --- | --- | --- | --- | --- | --- | --- |"
     print(header)

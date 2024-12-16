@@ -23,7 +23,7 @@ compound_components:
 
     subcomponents:
     - name: storage
-      class: regfile
+      class: regfile # see regfile.yaml
       area_scale: area_scale
       attributes:
         width: memory_width

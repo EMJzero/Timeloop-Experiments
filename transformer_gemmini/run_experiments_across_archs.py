@@ -24,6 +24,7 @@ def parse_options():
         "help": if_match_and_remove("-h") or if_match_and_remove("--help"),
         "live": if_match_and_remove("-l") or if_match_and_remove("--live"),
         "no-accel": if_match_and_remove("-na") or if_match_and_remove("--no-accel"),
+        "convs": if_match_and_remove("-c") or if_match_and_remove("--convs"),
     }
     return options
 
@@ -51,6 +52,7 @@ if options['help']:
     print("-h, --help\t\tPrint this help menu.")
     print("-l, --live\t\tShow Timeloop's live status as it runs.")
     print("-na, --no-accel\tDo not use Accelergy, rely on stored ERT and ART from previous experiments.")
+    print("-c, --convs\tRun experiments for convolutions rather than GEMMs.")
     sys.exit(0)
 
 layer_dims = {
@@ -99,7 +101,14 @@ layer_dims = {
 bert_layers = ["KQV", "KTQ", "VScores", "FF1"]
 MB_layers = [f"MB{i+1}" for i in range(6)]
 harsh_layers = ["Harsh1", "Harsh2"]
-layers = bert_layers[0:1]# + MB_layers # + harsh_layers
+
+convolutions_vgg = [f"vggL{i}" for i in range(16) if i not in (6, 9, 11, 12)] + ["vggL3+"]
+convolutions_resnet = [f"resnetL{i}" for i in range(21) if i not in (2, 3, 4, 8, 9, 13, 14, 18, 19)] + ["resnetL1+", "resnetL3+"]
+
+if not options["convs"]:
+    layers = bert_layers[0:1]# + MB_layers # + harsh_layers
+else:
+    layers = convolutions_vgg# + convolutions_resnet
 
 print(f"Arguments provided: {sys.argv}")
 
@@ -108,7 +117,10 @@ archs = ["gemmini"]#, "eyeriss", "simba"] #, "tpu"]
 # Define relative paths
 ARCH_PATHs = {arch: f"{os.curdir}/arch/system_{arch}.yaml" for arch in archs}
 COMPONENTS_PATH = f"{os.curdir}/arch/components/*.yaml"
-PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{layer if layer in bert_layers else 'MB'}_layer.yaml" for layer in layers}
+if not options["convs"]:
+    PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{layer if layer in bert_layers else 'MB'}_layer.yaml" for layer in layers}
+else:
+    PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{'resnet/' + layer if layer in convolutions_resnet else 'vgg/' + layer}_layer.yaml" for layer in layers}
 MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
 CONSTRAINTS_PATHs = {arch: f"{os.curdir}/constraints/constraints_{arch}.yaml" for arch in archs}
 VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
@@ -151,7 +163,7 @@ for arch in archs:
                 VARIABLES_PATH
             )
 
-        if layer not in bert_layers:
+        if layer not in bert_layers and not options["convs"]:
             for k in layer_dims[layer].keys():
                 spec.variables["MB_" + k] = layer_dims[layer][k]
 

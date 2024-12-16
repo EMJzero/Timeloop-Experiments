@@ -25,7 +25,8 @@ def parse_options():
         "live": if_match_and_remove("-l") or if_match_and_remove("--live"),
         "no_e_fusion": if_match_and_remove("-nef") or if_match_and_remove("--no_e_fusion"),
         "l_fusion": if_match_and_remove("-lf") or if_match_and_remove("--l_fusion"),
-        "pay_writeback_in_matmul": if_match_and_remove("-pwim") or if_match_and_remove("--pay_wb_in_mm")
+        "pay_writeback_in_matmul": if_match_and_remove("-pwim") or if_match_and_remove("--pay_wb_in_mm"),
+        "convs": if_match_and_remove("-c") or if_match_and_remove("--convs")
     }
     return options
 
@@ -41,12 +42,16 @@ if options['help']:
     print("\t\t\t[Stores the entirety of the output in the Accumulator, useful if NO execution\n\t\t\tdoes not overlap with the matmul, but happens later]")
     print("-pwim, --pay_wb_in_mm\tWhen fusing, moves estimation of the cost of writing the final output from the NOs to the matmul.")
     print("\t\t\t[Essentially, now the matmul writes to DRAM, and the NO simply operates to and from on-chip memories]")
+    print("-c, --convs\t\tWhen set, convolutions can be used as workloads.")
     sys.exit(0)
 
 matmuls = ["KQV", "KTQ", "VScores", "Out", "FF1", "FF2"]
 normops = ["softmax", "layernorm"]
 
-valid_args_1 = matmuls + normops
+convolutions_vgg = [f"vggL{i}" for i in range(16) if i not in (6, 9, 11, 12)] + ["vggL3+"]
+convolutions_resnet = [f"resnetL{i}" for i in range(21) if i not in (2, 3, 4, 8, 9, 13, 14, 18, 19)] + ["resnetL1+", "resnetL3+"]
+
+valid_args_1 = matmuls + normops + (convolutions_vgg + convolutions_resnet if options["convs"] else [])
 desc_1 = [
     "First matmul, computes Q, K and V from Input with a projection.",
     "Second matmul, computes Scores as K^T*Q.",
@@ -56,7 +61,7 @@ desc_1 = [
     "Sixth matmul, second projection of the FF block, decreases back the latent dimension.",
     "Softmax operation, applied column-wise on the output of \"KTQ\".",
     "LayerNorm operation, applied column-wise on the output of \"Out\"."
-]
+] + (["<conv> see the respective layer file..." for _ in convolutions_vgg + convolutions_resnet] if options["convs"] else [])
 
 # MUST STAY ORDERED! Set D,E=1 for all those above the specified one!
 # No Scratchpad as it only stores inputs and outputs
@@ -87,6 +92,11 @@ PROBLEM_PATH = f"{os.curdir}/layers/{sys.argv[1]}_layer.yaml"
 MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
 CONSTRAINTS_PATH = f"{os.curdir}/constraints/constraints{'_NOs' if is_norm_op else ''}.yaml"
 VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
+
+if sys.argv[1] in convolutions_vgg:
+    PROBLEM_PATH = PROBLEM_PATH.replace("/layers", "/layers/vgg")
+elif sys.argv[1] in convolutions_resnet:
+    PROBLEM_PATH = PROBLEM_PATH.replace("/layers", "/layers/resnet")
 
 print(f"Sources:\n- {ARCH_PATH}\n- {COMPONENTS_PATH}\n- {MAPPER_PATH}\n- {PROBLEM_PATH}\n- {CONSTRAINTS_PATH}\n- {VARIABLES_PATH}\n")
 

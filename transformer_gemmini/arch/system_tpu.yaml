@@ -89,7 +89,7 @@ architecture:
     spatial: {meshY: 256} # was 16
     constraints:
       spatial:
-        factors: [E=1, L=1, D=256] # weight or output stationary
+        factors: [R=1, S=1, Q=1, E=1, L=1, D=256] # weight or output stationary
 
   - !Component
     name: Accumulator
@@ -117,7 +117,7 @@ architecture:
     spatial: {meshX: 256} # was 16
     constraints:
       spatial:
-        factors: [D=1, L=1, E=256] # weight stationary
+        factors: [R=1, S=1, Q=1, D=1, L=1, E=256] # weight stationary
 
   - !Component
     name: Registers
@@ -138,7 +138,7 @@ architecture:
         keep: [Weights]
         bypass: [Inputs, Outputs]
       temporal:
-        factors: [D=1, E=1]
+        factors: [D=1, E=1, R=1, S=1, Q=1]
         permutation: [E, D, L]
   
   - !Component
