@@ -1,0 +1,53 @@
+problem:
+  version: 0.4
+  instance:
+    N: 1                   # Batch size
+
+    E: 128          # (C) Input channels / (E) INNER MATMUL DIM
+    H: 1                   # Input height
+    W: 1                   # Input width
+    G: 1                   # Groups
+
+    R: 4                   # Weight height
+    S: 4                   # Weight width
+    Hdilation: 1           # (Conv) Height dilation
+    Hstride: 1             # (Conv) Height stride
+    Wdilation: 1           # (Conv) Width dilation
+    Wstride: 1             # (Conv) Width stride
+
+    D: 256          # (M) Output channels / (D) WEIGHTs and OUTPUTs HEIGHT MATMUL DIM
+    L: 32           # (P) Output height / (L) INPUTs and OUTPUTs WIDTH MATMUL DIM
+    Q: 32                  # Output width
+  shape:
+    name: "CNN-Layer"
+    dimensions: [R, S, L, Q, E, D, N]
+    coefficients:
+      - name: Wstride
+        default: 1
+      - name: Hstride
+        default: 1
+      - name: Wdilation
+        default: 1
+      - name: Hdilation
+        default: 1
+        
+    data_spaces:
+      - name: Weights
+        projection:
+          - [ [E] ]
+          - [ [D] ]
+          - [ [R] ]
+          - [ [S] ]
+      - name: Inputs
+        projection:
+          - [ [N] ]
+          - [ [E] ]
+          - [ [Q] ]
+          - [ [L] ]
+      - name: Outputs
+        projection:
+          - [ [N] ]
+          - [ [D] ]
+          - [ [R, Wdilation], [L, Wstride] ] # SOP form: R*Wdilation + P*Wstride
+          - [ [S, Hdilation], [Q, Hstride] ] # SOP form: S*Hdilation + Q*Hstride 
+        read_write: True

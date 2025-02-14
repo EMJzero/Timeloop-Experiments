@@ -42,6 +42,15 @@ def append_to_file(path, text_to_append):
     with open(path, 'a') as file:
         file.write('\n\n' + text_to_append)
 
+def int_to_roman(n):
+    roman_numerals = [(1000, "M"), (900, "CM"), (500, "D"), (400, "CD"), (100, "C"), (90, "XC"), (50, "L"), (40, "XL"), (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")]
+    result = ""
+    for value, symbol in roman_numerals:
+        while n >= value:
+            result += symbol
+            n -= value
+    return result
+
 
 # MAIN:
 
@@ -104,15 +113,16 @@ harsh_layers = ["Harsh1", "Harsh2"]
 
 convolutions_vgg = [f"vggL{i}" for i in range(16) if i not in (6, 9, 11, 12)] + ["vggL3+"]
 convolutions_resnet = [f"resnetL{i}" for i in range(21) if i not in (2, 3, 4, 8, 9, 13, 14, 18, 19)] + ["resnetL1+", "resnetL3+"]
+convolutions_benchmarks = [int_to_roman(i) for i in range(1, 18)]
 
 if not options["convs"]:
     layers = bert_layers[0:1]# + MB_layers # + harsh_layers
 else:
-    layers = convolutions_vgg# + convolutions_resnet
+    layers = convolutions_benchmarks #+ convolutions_vgg + convolutions_resnet
 
 print(f"Arguments provided: {sys.argv}")
 
-archs = ["gemmini"]#, "eyeriss", "simba"] #, "tpu"]
+archs = ["eyeriss", "simba", "tpu"]
 
 # Define relative paths
 ARCH_PATHs = {arch: f"{os.curdir}/arch/system_{arch}.yaml" for arch in archs}
@@ -120,14 +130,25 @@ COMPONENTS_PATH = f"{os.curdir}/arch/components/*.yaml"
 if not options["convs"]:
     PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{layer if layer in bert_layers else 'MB'}_layer.yaml" for layer in layers}
 else:
-    PROBLEM_PATHs = {layer: f"{os.curdir}/layers/{'resnet/' + layer if layer in convolutions_resnet else 'vgg/' + layer}_layer.yaml" for layer in layers}
+    PROBLEM_PATHs = {}
+    for layer in layers:
+        if layer in convolutions_resnet:
+            PROBLEM_PATHs[layer] = f"{os.curdir}/layers/resnet/{layer}_layer.yaml"
+        elif layer in convolutions_vgg:
+            PROBLEM_PATHs[layer] = f"{os.curdir}/layers/vgg/{layer}_layer.yaml"
+        elif layer in convolutions_benchmarks:
+            PROBLEM_PATHs[layer] = f"{os.curdir}/layers/conv_benchmarks/{layer}.yaml"
+        else:
+            raise Exception("Ehm, you likely f*cked up the specification of layers...")
 MAPPER_PATH = f"{os.curdir}/mapper/mapper.yaml"
 CONSTRAINTS_PATHs = {arch: f"{os.curdir}/constraints/constraints_{arch}.yaml" for arch in archs}
 VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
 
-output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLD/"
+#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLD/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLL/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLE/"
+#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCD/"
+output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCL/"
 
 ERT_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ERT.yaml" for arch in archs}
 ART_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ART.yaml" for arch in archs}
