@@ -122,7 +122,7 @@ else:
 
 print(f"Arguments provided: {sys.argv}")
 
-archs = ["eyeriss", "simba", "tpu"]
+archs = ["eyeriss", "simba_right", "tpu"]
 
 # Define relative paths
 ARCH_PATHs = {arch: f"{os.curdir}/arch/system_{arch}.yaml" for arch in archs}
@@ -147,8 +147,8 @@ VARIABLES_PATH = f"{os.curdir}/mapper/variables.yaml"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLD/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLL/"
 #output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLE/"
-#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCD/"
-output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCL/"
+output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCD/"
+#output_dir = f"{os.curdir}/outputs_experiments_across_archs_TLCL/"
 
 ERT_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ERT.yaml" for arch in archs}
 ART_PATHs = {arch: f"{output_dir}{arch}_{layers[0]}/timeloop-mapper.ART.yaml" for arch in archs}
