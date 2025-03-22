@@ -89,14 +89,14 @@ architecture:
     spatial: {meshY: 256} # was 16
     constraints:
       spatial:
-        factors: [R=1, S=1, Q=1, E=1, L=1, D=256] # weight or output stationary
+        factors: [R=1, S=1, Q=1, E=1, L=1, D<=256, D>=128] # weight or output stationary
 
   - !Component
     name: Accumulator
     class: SRAM
     attributes:
-      entries: 2048*2
-      depth: 2048*2
+      entries: 2048
+      depth: 2048
       width: 32
       datawidth: 32
       network_word_bits: 16
@@ -117,7 +117,7 @@ architecture:
     spatial: {meshX: 256} # was 16
     constraints:
       spatial:
-        factors: [R=1, S=1, Q=1, D=1, L=1, E=256] # weight stationary
+        factors: [R=1, S=1, Q=1, D=1, L=1, E<=256, E>=128] # weight stationary
 
   - !Component
     name: Registers
